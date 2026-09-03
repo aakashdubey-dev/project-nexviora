@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Nexviora — Learning Dashboard</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+
+        <div class="brand">
+            <div class="brand-icon">N</div>
+            <div>
+                <h2>Nexviora</h2>
+                <span>Learning smarter</span>
+            </div>
+        </div>
+
+        <nav class="navigation">
+
+            <p class="nav-title">MENU</p>
+
+            <a href="#" class="nav-item active">
+                <span>⌂</span>
+                Dashboard
+            </a>
+
+            <a href="#" class="nav-item">
+                <span>📚</span>
+                My Subjects
+            </a>
+
+            <a href="#" class="nav-item">
+                <span>✓</span>
+                Tasks
+            </a>
+
+            <a href="#" class="nav-item" id="studySessionBtn"> 
+                <span>⏱</span> 
+                Study Sessions 
+            </a>
+
+            <a href="#" class="nav-item" id="aiPracticeNavBtn">
+                <span>🤖</span>
+                AI Practice
+            </a>
+
+            <p class="nav-title">INSIGHTS</p>
+
+            <a href="#" class="nav-item">
+                <span>📊</span>
+                Analytics
+            </a>
+
+            <a href="#" class="nav-item">
+                <span>🎯</span>
+                Weak Topics
+            </a>
+
+            <a href="#" class="nav-item">
+                <span>⚙</span>
+                Settings
+            </a>
+
+        </nav>
+
+        <div class="sidebar-bottom">
+            <div class="upgrade-card">
+                <div class="upgrade-icon">✦</div>
+                <h4>Learn smarter</h4>
+                <p>Let Nexviora help you understand your learning patterns.</p>
+                <button>Explore AI</button>
+            </div>
+
+            <div class="profile-mini">
+                <div class="avatar">A</div>
+                <div>
+                    <strong>Aakash</strong>
+                    <span>Student</span>
+                </div>
+                <span class="dots">•••</span>
+            </div>
+        </div>
+
+    </aside>
+
+
+    <!-- Main Content -->
+    <main class="main-content">
+
+        <!-- Top bar -->
+        <header class="topbar">
+
+            <div>
+                <p class="welcome-small">MONDAY, 22 AUGUST</p>
+                <h1>Good evening, Aakash 👋</h1>
+                <p class="subtitle">
+                    Here's what your learning looks like today.
+                </p>
+            </div>
+
+            <div class="top-actions">
+
+                <button class="icon-button">🔔</button>
+
+                <div class="top-profile">
+                    <div class="avatar">A</div>
+                    <div>
+                        <strong>Aakash</strong>
+                        <span>BTech • Semester 1</span>
+                    </div>
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <!-- Stats -->
+        <section class="stats-grid">
+
+            <div class="stat-card">
+                <div class="stat-top">
+                    <span>Study Time</span>
+                    <div class="stat-icon purple">⏱</div>
+                </div>
+
+                <h2 id="studyTime">0h 0m</h2>
+                <p class="positive">↑ 18% <span>vs last week</span></p>
+            </div>
+
+
+            <div class="stat-card">
+                <div class="stat-top">
+                    <span>Tasks Completed</span>
+                    <div class="stat-icon blue">✓</div>
+                </div>
+
+                <h2>8 / 10</h2>
+                <p class="positive">↑ 2 <span>this week</span></p>
+            </div>
+
+
+            <div class="stat-card">
+                <div class="stat-top">
+                    <span>Learning Streak</span>
+                    <div class="stat-icon orange">🔥</div>
+                </div>
+
+                <h2>7 Days</h2>
+                <p class="neutral">Keep it going!</p>
+            </div>
+
+
+            <div class="stat-card">
+                <div class="stat-top">
+                    <span>Overall Progress</span>
+                    <div class="stat-icon green">↗</div>
+                </div>
+
+                <h2>74%</h2>
+                <p class="positive">↑ 6% <span>this month</span></p>
+            </div>
+
+        </section>
+
+
+        <!-- Main Grid -->
+        <section class="dashboard-grid">
+
+            <!-- Today's Plan -->
+            <div class="panel tasks-panel">
+
+                <div class="panel-header">
+                    <div>
+                        <h3>Today's Plan</h3>
+                        <p>Stay consistent, one task at a time.</p>
+                    </div>
+
+                   <button class="view-button" id="addTaskBtn">+ Add Task</button>
+                </div>
+
+
+                <div class="task-list">
+
+                    <div class="task">
+                        <div class="check"></div>
+
+                        <div class="task-info">
+                            <strong>Complete Array Practice</strong>
+                            <span>DSA • 45 min</span>
+                        </div>
+
+                        <span class="task-tag high">High</span>
+                    </div>
+
+
+                    <div class="task">
+                        <div class="check completed">✓</div>
+
+                        <div class="task-info">
+                            <strong>Revise Digital Electronics</strong>
+                            <span>Digital Electronics • 30 min</span>
+                        </div>
+
+                        <span class="task-tag medium">Medium</span>
+                    </div>
+
+
+                    <div class="task">
+                        <div class="check"></div>
+
+                        <div class="task-info">
+                            <strong>Practice Python Functions</strong>
+                            <span>Python • 40 min</span>
+                        </div>
+
+                        <span class="task-tag medium">Medium</span>
+                    </div>
+
+
+                    <div class="task">
+                        <div class="check"></div>
+
+                        <div class="task-info">
+                            <strong>Read DBMS Notes</strong>
+                            <span>DBMS • 25 min</span>
+                        </div>
+
+                        <span class="task-tag low">Low</span>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Weekly Progress -->
+            <div class="panel progress-panel">
+
+                <div class="panel-header">
+                    <div>
+                        <h3>Weekly Progress</h3>
+                        <p>Your study activity</p>
+                    </div>
+
+                    <button class="dropdown">This Week ▾</button>
+                </div>
+
+                <div class="progress-chart">
+
+                    <div class="bar-area">
+                        <div class="bar" style="height: 45%"></div>
+                        <span>Mon</span>
+                    </div>
+
+                    <div class="bar-area">
+                        <div class="bar" style="height: 70%"></div>
+                        <span>Tue</span>
+                    </div>
+
+                    <div class="bar-area">
+                        <div class="bar" style="height: 55%"></div>
+                        <span>Wed</span>
+                    </div>
+
+                    <div class="bar-area">
+                        <div class="bar active-bar" style="height: 85%"></div>
+                        <span>Thu</span>
+                    </div>
+
+                    <div class="bar-area">
+                        <div class="bar" style="height: 65%"></div>
+                        <span>Fri</span>
+                    </div>
+
+                    <div class="bar-area">
+                        <div class="bar" style="height: 40%"></div>
+                        <span>Sat</span>
+                    </div>
+
+                    <div class="bar-area">
+                        <div class="bar" style="height: 25%"></div>
+                        <span>Sun</span>
+                    </div>
+
+                </div>
+
+                <div class="chart-footer">
+                    <strong>12h 40m</strong>
+                    <span>Total study time</span>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- Bottom Grid -->
+        <section class="bottom-grid">
+
+            <!-- Subjects -->
+            <div class="panel">
+
+                <div class="panel-header">
+                    <div>
+                        <h3>My Subjects</h3>
+                        <p>Your current learning progress</p>
+                    </div>
+
+                    <button class="view-button">Manage →</button>
+                </div>
+
+
+                <div class="subjects">
+
+                    <div class="subject">
+                        <div class="subject-icon purple-bg">DS</div>
+
+                        <div class="subject-info">
+                            <strong>Data Structures</strong>
+                            <span>12 / 18 topics</span>
+
+                            <div class="progress-line">
+                                <div style="width: 68%"></div>
+                            </div>
+                        </div>
+
+                        <strong>68%</strong>
+                    </div>
+
+
+                    <div class="subject">
+                        <div class="subject-icon blue-bg">DE</div>
+
+                        <div class="subject-info">
+                            <strong>Digital Electronics</strong>
+                            <span>9 / 14 topics</span>
+
+                            <div class="progress-line">
+                                <div style="width: 64%"></div>
+                            </div>
+                        </div>
+
+                        <strong>64%</strong>
+                    </div>
+
+
+                    <div class="subject">
+                        <div class="subject-icon green-bg">PY</div>
+
+                        <div class="subject-info">
+                            <strong>Python</strong>
+                            <span>15 / 18 topics</span>
+
+                            <div class="progress-line">
+                                <div style="width: 83%"></div>
+                            </div>
+                        </div>
+
+                        <strong>83%</strong>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- AI Practice -->
+            <div class="panel ai-panel">
+
+                <div class="ai-glow"></div>
+
+                <div class="ai-content">
+
+                    <div class="ai-icon">✦</div>
+
+                    <span class="ai-label">NEXVIORA AI</span>
+
+                    <h3>Ready to test yourself?</h3>
+
+                    <p>
+                        Practice questions based on your subjects
+                        and learning progress.
+                    </p>
+
+                <button class="primary-button" id="aiPracticeBtn">
+                    Start AI Practice →
+                </button>   
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+    <div class="study-timer" id="studyTimer">
+
+    <div class="timer-box">
+
+        <button class="timer-close" id="closeTimer">×</button>
+
+        <span class="timer-label">NEXVIORA STUDY SESSION</span>
+
+        <h2 id="timerDisplay">00:00:00</h2>
+
+        <p>Focus on your learning.</p>
+
+        <div class="timer-actions">
+            <button id="startTimer">Start</button>
+            <button id="stopTimer">Stop</button>
+        </div>
+
+    </div>
+
+</div>
+    <div class="modal" id="taskModal">
+    <div class="modal-box">
+
+        <div class="modal-header">
+            <div>
+                <h3>Add New Task</h3>
+                <p>Create a task for your study plan.</p>
+            </div>
+
+            <button class="close-modal" id="closeModal">×</button>
+        </div>
+
+        <input
+            type="text"
+            id="taskTitle"
+            placeholder="Task name"
+        >
+
+        <input
+            type="text"
+            id="taskSubject"
+            placeholder="Subject (DSA, Python, DBMS...)"
+        >
+
+        <input
+            type="number"
+            id="taskDuration"
+            placeholder="Duration in minutes"
+        >
+
+        <select id="taskPriority">
+            <option value="Medium">Medium Priority</option>
+            <option value="High">High Priority</option>
+            <option value="Low">Low Priority</option>
+        </select>
+
+        <button id="saveTaskBtn" class="save-task">
+            Add Task
+        </button>
+
+    </div>
+</div>
+<div class="ai-modal" id="aiModal">
+
+    <div class="ai-modal-box">
+
+        <button class="ai-close" id="closeAiModal">×</button>
+
+        <span class="ai-label">NEXVIORA AI</span>
+
+        <h2>AI Practice</h2>
+
+        <p class="ai-description">
+            Choose a subject and topic to start practicing.
+        </p>
+
+        <select id="aiSubject">
+            <option value="">Select Subject</option>
+            <option value="DSA">Data Structures</option>
+            <option value="Digital Electronics">Digital Electronics</option>
+            <option value="Python">Python</option>
+            <option value="DBMS">DBMS</option>
+        </select>
+
+        <input
+            type="text"
+            id="aiTopic"
+            placeholder="Enter topic (e.g. Arrays)"
+        >
+
+        <button class="ai-generate" id="generateQuestion">
+            Generate Question →
+        </button>
+
+        <div class="question-area" id="questionArea">
+
+            <span class="question-label">
+                PRACTICE QUESTION
+            </span>
+
+            <h3 id="questionText">
+                Your question will appear here.
+            </h3>
+
+            <textarea
+                id="aiAnswer"
+                placeholder="Write your answer..."
+            ></textarea>
+
+            <button class="check-answer" id="checkAnswer">
+                Check Answer
+            </button>
+
+            <p id="aiResult"></p>
+
+        </div>
+
+    </div>
+
+</div>
+<script src="script.js"></script>
+</body>
+</html>
