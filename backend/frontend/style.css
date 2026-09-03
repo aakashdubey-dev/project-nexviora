@@ -1281,3 +1281,207 @@ body {
     font-weight: 600;
     margin-top: 12px;
 }
+/* ==========================================
+   AI PRACTICE HISTORY
+========================================== */
+
+.practice-history-section {
+    margin-bottom: 20px;
+}
+
+.practice-history-section .panel {
+    padding: 22px;
+}
+
+.practice-stats {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.practice-stats > div {
+    min-width: 75px;
+    padding: 8px 11px;
+    background: #f8f8fc;
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    text-align: center;
+}
+
+.practice-stats strong {
+    display: block;
+    font-size: 14px;
+    color: var(--text);
+    margin-bottom: 3px;
+}
+
+.practice-stats span {
+    display: block;
+    font-size: 8px;
+    color: var(--muted);
+}
+
+.history-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.empty-history {
+    text-align: center;
+    padding: 30px 15px;
+    color: var(--muted);
+}
+
+.empty-history span {
+    display: block;
+    font-size: 28px;
+    margin-bottom: 10px;
+}
+
+.empty-history p {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 5px;
+}
+
+.empty-history small {
+    font-size: 9px;
+}
+
+.history-item {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 15px;
+    background: #fcfcfe;
+    transition: 0.2s ease;
+}
+
+.history-item:hover {
+    border-color: #ddd9f8;
+    box-shadow: 0 6px 20px rgba(20, 20, 40, 0.04);
+}
+
+.history-main {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+}
+
+.history-info {
+    flex: 1;
+}
+
+.history-info strong {
+    display: block;
+    font-size: 12px;
+    margin-bottom: 5px;
+}
+
+.history-info span {
+    display: block;
+    font-size: 9px;
+    color: var(--muted);
+    margin-bottom: 4px;
+}
+
+.history-info small {
+    font-size: 8px;
+    color: #a0a2ad;
+}
+
+.history-score {
+    min-width: 70px;
+    text-align: right;
+}
+
+.history-score strong {
+    display: block;
+    font-size: 16px;
+    color: var(--primary);
+    margin-bottom: 4px;
+}
+
+.history-score span {
+    font-size: 8px;
+    font-weight: 700;
+    color: var(--green);
+}
+
+.history-question,
+.history-answer,
+.history-feedback {
+    margin-top: 13px;
+    padding-top: 11px;
+    border-top: 1px solid #f0f0f3;
+}
+
+.history-question strong,
+.history-answer strong,
+.history-feedback strong {
+    display: block;
+    font-size: 9px;
+    margin-bottom: 5px;
+    color: #55586a;
+}
+
+.history-question p,
+.history-answer p,
+.history-feedback p {
+    font-size: 10px;
+    line-height: 1.6;
+    color: var(--muted);
+}
+
+
+/* ==========================================
+   AI HISTORY RESPONSIVE
+========================================== */
+
+@media (max-width: 750px) {
+
+    .practice-history-section .panel-header {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .practice-stats {
+        width: 100%;
+    }
+
+    .practice-stats > div {
+        flex: 1;
+    }
+
+    .history-main {
+        align-items: flex-start;
+    }
+
+    .history-score {
+        min-width: 60px;
+    }
+
+}
+/* ================================
+   SUBJECT MANAGEMENT
+================================ */
+
+.delete-subject {
+    border: none;
+    background: transparent;
+    color: var(--red);
+    font-size: 14px;
+    cursor: pointer;
+    padding: 5px 7px;
+    border-radius: 7px;
+    margin-left: 8px;
+    transition: 0.2s ease;
+}
+
+.delete-subject:hover {
+    background: #fff0f0;
+    transform: scale(1.08);
+}
