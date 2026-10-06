@@ -1246,3 +1246,252 @@ updateOverallProgress();
 console.log(
     "Nexviora loaded successfully 🚀"
 );
+
+/* NEXVIORA JARVIS: TEXT + IMAGE + VOICE */
+(() => {
+    const style = document.createElement("style");
+    style.textContent = `
+      #jarvisPanel {
+        position:fixed; right:20px; bottom:85px; z-index:9999;
+        width:min(360px,calc(100vw - 28px)); height:460px;
+        background:white; color:#222; border:1px solid #ddd;
+        border-radius:16px; box-shadow:0 8px 35px #0002;
+        display:none; flex-direction:column; overflow:hidden;
+        font:14px Arial,sans-serif;
+      }
+      #jarvisHead {background:#5636c9;color:white;padding:15px;
+        display:flex;justify-content:space-between;font-weight:bold}
+      #jarvisMessages {flex:1;overflow:auto;padding:12px}
+      .jarvisBubble {padding:10px;margin:8px 0;border-radius:10px;
+        background:#f0edff;white-space:pre-wrap;overflow-wrap:anywhere}
+      .jarvisUser {background:#e7f5e9}
+      #jarvisControls {padding:10px;display:grid;gap:7px;
+        border-top:1px solid #eee}
+      #jarvisControls input[type=text] {width:100%;box-sizing:border-box;
+        padding:10px;border:1px solid #ccc;border-radius:8px}
+      #jarvisControls button,#jarvisToggle {
+        padding:10px;border:0;border-radius:8px;cursor:pointer}
+      #jarvisToggle {position:fixed;right:20px;bottom:20px;z-index:9998;
+        background:#5636c9;color:white;font-weight:bold}
+      #jarvisPreview {max-width:100%;max-height:100px;display:none}
+    `;
+    document.head.appendChild(style);
+
+    const toggle = document.createElement("button");
+    toggle.id = "jarvisToggle";
+    toggle.textContent = "🤖 Ask JARVIS";
+    document.body.appendChild(toggle);
+
+    const panel = document.createElement("section");
+    panel.id = "jarvisPanel";
+    panel.innerHTML = `
+      <div id="jarvisHead">
+        <span>🤖 Nexviora JARVIS</span>
+        <button id="jarvisClose" aria-label="Close">✕</button>
+      </div>
+      <div id="jarvisMessages" aria-live="polite">
+        <div class="jarvisBubble">Hi! Type, speak, or upload a question photo.</div>
+      </div>
+      <div id="jarvisControls">
+        <img id="jarvisPreview" alt="Selected question photo">
+        <input id="jarvisInput" type="text" placeholder="Ask anything...">
+        <input id="jarvisFile" type="file" accept="image/png,image/jpeg,image/webp" hidden>
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+          <button id="jarvisSend">Send</button>
+          <button id="jarvisMic">🎙️ Speak</button>
+          <button id="jarvisPhoto">📷 Photo</button>
+          <button id="jarvisSpeak">🔊 Read answers: ON</button>
+        </div>
+        <small>Voice requires microphone permission. Image AI may require a paid model.</small>
+      </div>`;
+    document.body.appendChild(panel);
+
+    const $ = id => document.getElementById(id);
+    const messages = $("jarvisMessages");
+    const input = $("jarvisInput");
+    const fileInput = $("jarvisFile");
+    const preview = $("jarvisPreview");
+    let imageData = null;
+    let speakAnswers = true;
+    let busy = false;
+
+    toggle.onclick = () => {
+        panel.style.display = "flex";
+        toggle.style.display = "none";
+        input.focus();
+    };
+    $("jarvisClose").onclick = () => {
+        panel.style.display = "none";
+        toggle.style.display = "block";
+    };
+
+    function bubble(text, isUser = false) {
+        const el = document.createElement("div");
+        el.className = "jarvisBubble" + (isUser ? " jarvisUser" : "");
+        el.textContent = text;
+        messages.appendChild(el);
+        messages.scrollTop = messages.scrollHeight;
+        return el;
+    }
+
+    fileInput.onchange = () => {
+        const file = fileInput.files[0];
+        if (!file) return;
+
+        if (file.size > 5 * 1024 * 1024) {
+            bubble("Please choose an image smaller than 5 MB.");
+            fileInput.value = "";
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = () => {
+            imageData = reader.result;
+            preview.src = imageData;
+            preview.style.display = "block";
+        };
+        reader.readAsDataURL(file);
+    };
+
+    $("jarvisPhoto").onclick = () => fileInput.click();
+
+    $("jarvisSpeak").onclick = () => {
+        speakAnswers = !speakAnswers;
+        $("jarvisSpeak").textContent =
+            "🔊 Read answers: " + (speakAnswers ? "ON" : "OFF");
+        if (!speakAnswers) speechSynthesis.cancel();
+    };
+
+    async function sendMessage(textFromVoice = "") {
+        const message = (textFromVoice || input.value).trim();
+        if (busy || (!message && !imageData)) return;
+
+        busy = true;
+        $("jarvisSend").disabled = true;
+
+        if (message) bubble(message, true);
+        if (imageData) bubble("📷 Image attached", true);
+
+        input.value = "";
+        const attachedImage = imageData;
+        imageData = null;
+        preview.removeAttribute("src");
+        preview.style.display = "none";
+        fileInput.value = "";
+
+        const loading = bubble("JARVIS is thinking...");
+
+        try {
+            const response = await fetch("/api/assistant", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    message,
+                    imageData: attachedImage
+                })
+            });
+
+            const data = await response.json();
+            if (!response.ok) throw new Error(data.error || "Request failed");
+
+            loading.textContent = data.answer;
+
+            if (speakAnswers && "speechSynthesis" in window) {
+                speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(data.answer);
+                utterance.lang = "hi-IN";
+                speechSynthesis.speak(utterance);
+            }
+        } catch (error) {
+            loading.textContent = "Error: " + error.message;
+        } finally {
+            busy = false;
+            $("jarvisSend").disabled = false;
+            input.focus();
+        }
+    }
+
+    $("jarvisSend").onclick = () => sendMessage();
+    input.addEventListener("keydown", e => {
+        if (e.key === "Enter") sendMessage();
+    });
+
+
+const SpeechRecognition =
+    window.SpeechRecognition || window.webkitSpeechRecognition;
+
+let recognition = null;
+let isListening = false;
+
+$("jarvisMic").onclick = () => {
+    if (!SpeechRecognition) {
+        bubble("Voice input is not supported. Please use updated Chrome.");
+        return;
+    }
+
+    if (isListening) {
+        recognition.stop();
+        return;
+    }
+
+    recognition = new SpeechRecognition();
+    recognition.lang = "en-IN"; // English voice; use "hi-IN" for Hindi
+    recognition.interimResults = true;
+    recognition.continuous = false;
+    recognition.maxAlternatives = 1;
+
+    let finalTranscript = "";
+
+    recognition.onstart = () => {
+        isListening = true;
+        $("jarvisMic").textContent = "🛑 Stop Listening";
+    };
+
+    recognition.onresult = (event) => {
+        let interimTranscript = "";
+
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+            const transcript = event.results[i][0].transcript;
+
+            if (event.results[i].isFinal) {
+                finalTranscript += transcript + " ";
+            } else {
+                interimTranscript += transcript;
+            }
+        }
+
+        input.value = (finalTranscript + interimTranscript).trim();
+    };
+
+    recognition.onerror = (event) => {
+        if (event.error === "no-speech") {
+            bubble("Voice not detected. Please speak after pressing the mic.");
+        } else if (event.error === "not-allowed") {
+            bubble("Microphone blocked. Allow microphone access in Chrome settings.");
+        } else {
+            bubble("Voice error: " + event.error);
+        }
+    };
+
+    recognition.onend = () => {
+        isListening = false;
+        $("jarvisMic").textContent = "🎙️ Speak";
+
+        if (finalTranscript.trim()) {
+            input.value = finalTranscript.trim();
+            sendMessage();
+        }
+    };
+
+    try {
+        recognition.start();
+    } catch (error) {
+        isListening = false;
+        $("jarvisMic").textContent = "🎙️ Speak";
+        bubble("Could not start microphone. Please try again.");
+    }
+};
+})();
+function updateOverallProgress() {
+    // Progress update temporarily skipped
+}
