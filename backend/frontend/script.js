@@ -6,2487 +6,1492 @@ const taskList = document.querySelector(".task-list");
 const addTaskBtn = document.querySelector("#addTaskBtn");
 
 let tasks = JSON.parse(localStorage.getItem("nexvioraTasks")) || [
-  {
-    name: "DSA",
-    duration: 45,
-    priority: "High",
-    completed: false
-  },
-  {
-    name: "Digital Electronics",
-    duration: 30,
-    priority: "Medium",
-    completed: true
-  },
-  {
-    name: "Python Functions",
-    duration: 40,
-    priority: "Medium",
-    completed: false
-  },
-  {
-    name: "DBMS Notes",
-    duration: 25,
-    priority: "Low",
-    completed: false
-  }
+    {
+        title: "Complete Array Practice",
+        subject: "DSA",
+        duration: "45 min",
+        priority: "High",
+        completed: false
+    },
+    {
+        title: "Revise Digital Electronics",
+        subject: "Digital Electronics",
+        duration: "30 min",
+        priority: "Medium",
+        completed: true
+    },
+    {
+        title: "Practice Python Functions",
+        subject: "Python",
+        duration: "40 min",
+        priority: "Medium",
+        completed: false
+    },
+    {
+        title: "Read DBMS Notes",
+        subject: "DBMS",
+        duration: "25 min",
+        priority: "Low",
+        completed: false
+    }
 ];
 
 function saveTasks() {
-  localStorage.setItem("nexvioraTasks", JSON.stringify(tasks));
+    localStorage.setItem("nexvioraTasks", JSON.stringify(tasks));
 }
 
 function renderTasks() {
-  if (!taskList) return;
 
-  taskList.innerHTML = "";
+    taskList.innerHTML = "";
 
-  if (tasks.length === 0) {
-    taskList.innerHTML = `
-      <div class="empty-state">
-        <p>No tasks added yet.</p>
-      </div>
-    `;
+    tasks.forEach((task, index) => {
+
+        const taskElement = document.createElement("div");
+
+        taskElement.className = "task";
+
+        taskElement.innerHTML = `
+            <div class="check ${task.completed ? "completed" : ""}"
+                 data-index="${index}">
+                ${task.completed ? "✓" : ""}
+            </div>
+
+            <div class="task-info">
+                <strong>${task.title}</strong>
+                <span>${task.subject} • ${task.duration}</span>
+            </div>
+
+            <span class="task-tag ${task.priority.toLowerCase()}">
+                ${task.priority}
+            </span>
+
+            <button class="delete-task" data-index="${index}">
+                🗑
+            </button>
+        `;
+
+        taskList.appendChild(taskElement);
+    });
+
     updateTaskCount();
-    updateOverallProgress();
-    return;
-  }
-
-  tasks.forEach((task, index) => {
-    const taskItem = document.createElement("div");
-    taskItem.className = `task-item ${task.completed ? "completed" : ""}`;
-
-    taskItem.innerHTML = `
-      <div class="task-left">
-        <input
-          type="checkbox"
-          class="task-checkbox"
-          data-index="${index}"
-          ${task.completed ? "checked" : ""}
-        >
-
-        <div class="task-info">
-          <h4>${task.name}</h4>
-          <span>${task.duration} min</span>
-        </div>
-      </div>
-
-      <div class="task-right">
-        <span class="priority-badge ${task.priority.toLowerCase()}">
-          ${task.priority}
-        </span>
-
-        <button
-          class="delete-task-btn"
-          data-index="${index}"
-          title="Delete task"
-        >
-          ×
-        </button>
-      </div>
-    `;
-
-    taskList.appendChild(taskItem);
-  });
-
-  updateTaskCount();
-  updateOverallProgress();
 }
 
-function updateTaskCount() {
-  const taskCount = document.querySelector("#taskCount");
+taskList.addEventListener("click", (event) => {
 
-  if (!taskCount) return;
+    const checkbox = event.target.closest(".check");
 
-  const completed = tasks.filter(task => task.completed).length;
+    if (!checkbox) return;
 
-  taskCount.textContent = `${completed}/${tasks.length}`;
-}
+    const index = checkbox.dataset.index;
 
-function addTask(name, duration, priority) {
-  if (!name) return;
-
-  tasks.push({
-    name,
-    duration: Number(duration) || 30,
-    priority: priority || "Medium",
-    completed: false
-  });
-
-  saveTasks();
-  renderTasks();
-}
-
-if (taskList) {
-  taskList.addEventListener("change", (event) => {
-    if (!event.target.classList.contains("task-checkbox")) return;
-
-    const index = Number(event.target.dataset.index);
-
-    if (!tasks[index]) return;
-
-    tasks[index].completed = event.target.checked;
+    tasks[index].completed = !tasks[index].completed;
 
     saveTasks();
     renderTasks();
-  });
+});
 
-  taskList.addEventListener("click", (event) => {
-    const deleteButton = event.target.closest(".delete-task-btn");
+taskList.addEventListener("click", (event) => {
+
+    const deleteButton = event.target.closest(".delete-task");
 
     if (!deleteButton) return;
 
-    const index = Number(deleteButton.dataset.index);
-
-    if (!tasks[index]) return;
+    const index = deleteButton.dataset.index;
 
     tasks.splice(index, 1);
 
     saveTasks();
     renderTasks();
-  });
-}
+});
+
 
 // ==========================================
 // ADD TASK MODAL
 // ==========================================
 
 const taskModal = document.querySelector("#taskModal");
-const closeTaskModal = document.querySelector("#closeTaskModal");
-const cancelTaskBtn = document.querySelector("#cancelTaskBtn");
-const taskForm = document.querySelector("#taskForm");
+const closeModal = document.querySelector("#closeModal");
+const saveTaskBtn = document.querySelector("#saveTaskBtn");
 
-function openTaskModal() {
-  if (!taskModal) return;
+const taskTitle = document.querySelector("#taskTitle");
+const taskSubject = document.querySelector("#taskSubject");
+const taskDuration = document.querySelector("#taskDuration");
+const taskPriority = document.querySelector("#taskPriority");
 
-  taskModal.classList.add("active");
-}
+addTaskBtn.addEventListener("click", () => {
 
-function closeTaskModalFn() {
-  if (!taskModal) return;
+    taskModal.style.display = "flex";
 
-  taskModal.classList.remove("active");
+    taskTitle.focus();
+});
 
-  if (taskForm) {
-    taskForm.reset();
-  }
-}
+closeModal.addEventListener("click", () => {
 
-if (addTaskBtn) {
-  addTaskBtn.addEventListener("click", openTaskModal);
-}
+    taskModal.style.display = "none";
+});
 
-if (closeTaskModal) {
-  closeTaskModal.addEventListener("click", closeTaskModalFn);
-}
+taskModal.addEventListener("click", (event) => {
 
-if (cancelTaskBtn) {
-  cancelTaskBtn.addEventListener("click", closeTaskModalFn);
-}
-
-if (taskModal) {
-  taskModal.addEventListener("click", (event) => {
     if (event.target === taskModal) {
-      closeTaskModalFn();
+        taskModal.style.display = "none";
     }
-  });
-}
 
-if (taskForm) {
-  taskForm.addEventListener("submit", (event) => {
-    event.preventDefault();
+});
 
-    const taskNameInput = taskForm.querySelector("#taskName");
-    const taskDurationInput = taskForm.querySelector("#taskDuration");
-    const taskPriorityInput = taskForm.querySelector("#taskPriority");
+saveTaskBtn.addEventListener("click", () => {
 
-    const name = taskNameInput ? taskNameInput.value.trim() : "";
-    const duration = taskDurationInput ? taskDurationInput.value : 30;
-    const priority = taskPriorityInput ? taskPriorityInput.value : "Medium";
+    const title = taskTitle.value.trim();
+    const subject = taskSubject.value.trim();
+    const duration = taskDuration.value.trim();
+    const priority = taskPriority.value;
 
-    if (!name) return;
+    if (!title || !subject || !duration) {
 
-    addTask(name, duration, priority);
-    closeTaskModalFn();
-  });
-}
-
-// ==========================================
-// INITIAL TASK RENDER
-// ==========================================
-
-renderTasks();
-
-// ==========================================
-// STUDY TIMER
-// ==========================================
-
-let timerInterval = null;
-let timerSeconds = 25 * 60;
-let timerRunning = false;
-
-const timerDisplay = document.querySelector("#timerDisplay");
-const startTimerBtn = document.querySelector("#startTimerBtn");
-const pauseTimerBtn = document.querySelector("#pauseTimerBtn");
-const resetTimerBtn = document.querySelector("#resetTimerBtn");
-
-function formatTime(seconds) {
-  const minutes = Math.floor(seconds / 60);
-  const remainingSeconds = seconds % 60;
-
-  return `${String(minutes).padStart(2, "0")}:${String(
-    remainingSeconds
-  ).padStart(2, "0")}`;
-}
-
-function updateTimerDisplay() {
-  if (!timerDisplay) return;
-
-  timerDisplay.textContent = formatTime(timerSeconds);
-}
-
-function startTimer() {
-  if (timerRunning) return;
-
-  timerRunning = true;
-
-  timerInterval = setInterval(() => {
-    if (timerSeconds > 0) {
-      timerSeconds--;
-      updateTimerDisplay();
-    } else {
-      pauseTimer();
-      recordStudySession(25);
+        alert("Please fill all task details.");
+        return;
     }
-  }, 1000);
-}
 
-function pauseTimer() {
-  timerRunning = false;
+    const newTask = {
 
-  if (timerInterval) {
-    clearInterval(timerInterval);
-    timerInterval = null;
-  }
-}
+        title: title,
+        subject: subject,
+        duration: duration + " min",
+        priority: priority,
+        completed: false
+    };
 
-function resetTimer() {
-  pauseTimer();
+    tasks.push(newTask);
 
-  timerSeconds = 25 * 60;
+    saveTasks();
+    renderTasks();
 
-  updateTimerDisplay();
-}
+    taskTitle.value = "";
+    taskSubject.value = "";
+    taskDuration.value = "";
+    taskPriority.value = "Medium";
 
-if (startTimerBtn) {
-  startTimerBtn.addEventListener("click", startTimer);
-}
+    taskModal.style.display = "none";
+});
 
-if (pauseTimerBtn) {
-  pauseTimerBtn.addEventListener("click", pauseTimer);
-}
+function updateTaskCount() {
 
-if (resetTimerBtn) {
-  resetTimerBtn.addEventListener("click", resetTimer);
-}
+    const completedTasks =
+        tasks.filter(task => task.completed).length;
 
-updateTimerDisplay();
+    const totalTasks = tasks.length;
 
-// ==========================================
-// STUDY SESSION STORAGE
-// ==========================================
+    const taskStat =
+        document.querySelector("#taskStat");
 
-let studySessions =
-  JSON.parse(localStorage.getItem("nexvioraStudySessions")) || [];
+    if (taskStat) {
 
-function saveStudySessions() {
-  localStorage.setItem(
-    "nexvioraStudySessions",
-    JSON.stringify(studySessions)
-  );
-}
-
-function recordStudySession(minutes) {
-  studySessions.push({
-    date: new Date().toISOString(),
-    minutes: Number(minutes) || 0
-  });
-
-  saveStudySessions();
-  updateStudyTime();
-}
-
-function getTotalStudyMinutes() {
-  return studySessions.reduce(
-    (total, session) => total + Number(session.minutes || 0),
-    0
-  );
-}
-
-function updateStudyTime() {
-  const studyTimeElements = document.querySelectorAll(".study-time-value");
-
-  const totalMinutes = getTotalStudyMinutes();
-
-  studyTimeElements.forEach((element) => {
-    if (totalMinutes >= 60) {
-      const hours = Math.floor(totalMinutes / 60);
-      const minutes = totalMinutes % 60;
-
-      element.textContent = `${hours}h ${minutes}m`;
-    } else {
-      element.textContent = `${totalMinutes}m`;
+        taskStat.textContent =
+            `${completedTasks} / ${totalTasks}`;
     }
-  });
+
+    updateOverallProgress();
 }
 
-updateStudyTime();
 
 // ==========================================
-// EXPLORE AI BUTTON
+// SIDEBAR NAVIGATION
 // ==========================================
 
-const exploreAiBtn = document.querySelector("#exploreAiBtn");
+const navItems =
+    document.querySelectorAll(".nav-item");
 
-if (exploreAiBtn) {
-  exploreAiBtn.addEventListener("click", () => {
-    const aiPracticeBtn = document.querySelector("#aiPracticeBtn");
+navItems.forEach((item) => {
 
-    if (aiPracticeBtn) {
-      aiPracticeBtn.click();
-    }
-  });
-}
+    item.addEventListener("click", (event) => {
+
+        event.preventDefault();
+
+        navItems.forEach((nav) => {
+            nav.classList.remove("active");
+        });
+
+        item.classList.add("active");
+
+        if (item.textContent.includes("AI Practice")) {
+
+            if (aiModal) {
+                aiModal.style.display = "flex";
+            }
+        }
+
+        if (item.id === "studySessionBtn") {
+
+            if (studyTimer) {
+                studyTimer.style.display = "flex";
+            }
+        }
+
+    });
+
+});
+
+
+// ==========================================
+// EXPLORE AI
+// ==========================================
+
+const exploreButton =
+    document.querySelector(".upgrade-card button");
+
+exploreButton.addEventListener("click", () => {
+
+    aiModal.style.display = "flex";
+
+});
+
 
 // ==========================================
 // NOTIFICATIONS
 // ==========================================
 
-const notificationBtn = document.querySelector("#notificationBtn");
-const notificationPanel = document.querySelector("#notificationPanel");
+const notificationButton =
+    document.querySelector(".icon-button");
 
-if (notificationBtn && notificationPanel) {
-  notificationBtn.addEventListener("click", () => {
-    notificationPanel.classList.toggle("active");
-  });
-}
+notificationButton.addEventListener("click", () => {
 
-// ==========================================
-// SUBJECT SYSTEM
-// ==========================================
-
-let subjects =
-  JSON.parse(localStorage.getItem("nexvioraSubjects")) || [
-    {
-      name: "Data Structures & Algorithms",
-      shortName: "DSA",
-      progress: 68
-    },
-    {
-      name: "Digital Electronics",
-      shortName: "DE",
-      progress: 52
-    },
-    {
-      name: "Python",
-      shortName: "Python",
-      progress: 74
-    },
-    {
-      name: "Database Management System",
-      shortName: "DBMS",
-      progress: 41
-    }
-  ];
-
-function saveSubjects() {
-  localStorage.setItem("nexvioraSubjects", JSON.stringify(subjects));
-}
-
-function renderSubjects() {
-  const subjectsList = document.querySelector("#subjectsList");
-
-  if (!subjectsList) return;
-
-  subjectsList.innerHTML = "";
-
-  if (subjects.length === 0) {
-    subjectsList.innerHTML = `
-      <div class="empty-state">
-        <p>No subjects added yet.</p>
-      </div>
-    `;
-
-    return;
-  }
-
-  subjects.forEach((subject, index) => {
-    const subjectCard = document.createElement("div");
-
-    subjectCard.className = "subject-card";
-
-    subjectCard.innerHTML = `
-      <div class="subject-card-header">
-        <div>
-          <span class="subject-short">${subject.shortName}</span>
-          <h4>${subject.name}</h4>
-        </div>
-
-        <button
-          class="delete-subject-btn"
-          data-index="${index}"
-          title="Delete subject"
-        >
-          ×
-        </button>
-      </div>
-
-      <div class="progress-row">
-        <span>Progress</span>
-        <strong>${subject.progress}%</strong>
-      </div>
-
-      <div class="progress-bar">
-        <div
-          class="progress-fill"
-          style="width:${subject.progress}%"
-        ></div>
-      </div>
-    `;
-
-    subjectsList.appendChild(subjectCard);
-  });
-}
-
-renderSubjects();
-
-// ==========================================
-// SUBJECT MODAL
-// ==========================================
-
-const manageSubjectsBtn = document.querySelector("#manageSubjectsBtn");
-const subjectModal = document.querySelector("#subjectModal");
-const closeSubjectModal = document.querySelector("#closeSubjectModal");
-const subjectForm = document.querySelector("#subjectForm");
-
-function openSubjectModal() {
-  if (!subjectModal) return;
-
-  subjectModal.classList.add("active");
-}
-
-function closeSubjectModalFn() {
-  if (!subjectModal) return;
-
-  subjectModal.classList.remove("active");
-
-  if (subjectForm) {
-    subjectForm.reset();
-  }
-}
-
-if (manageSubjectsBtn) {
-  manageSubjectsBtn.addEventListener("click", openSubjectModal);
-}
-
-if (closeSubjectModal) {
-  closeSubjectModal.addEventListener(
-    "click",
-    closeSubjectModalFn
-  );
-}
-
-if (subjectModal) {
-  subjectModal.addEventListener("click", (event) => {
-    if (event.target === subjectModal) {
-      closeSubjectModalFn();
-    }
-  });
-}
-
-if (subjectForm) {
-  subjectForm.addEventListener("submit", (event) => {
-    event.preventDefault();
-
-    const nameInput = subjectForm.querySelector("#subjectName");
-    const shortNameInput =
-      subjectForm.querySelector("#subjectShortName");
-    const progressInput =
-      subjectForm.querySelector("#subjectProgress");
-
-    const name = nameInput ? nameInput.value.trim() : "";
-    const shortName = shortNameInput
-      ? shortNameInput.value.trim()
-      : "";
-    const progress = progressInput
-      ? Number(progressInput.value) || 0
-      : 0;
-
-    if (!name) return;
-
-    subjects.push({
-      name,
-      shortName: shortName || name.substring(0, 3).toUpperCase(),
-      progress: Math.max(0, Math.min(100, progress))
-    });
-
-    saveSubjects();
-    renderSubjects();
-
-    closeSubjectModalFn();
-  });
-}
-
-const subjectsListElement = document.querySelector("#subjectsList");
-
-if (subjectsListElement) {
-  subjectsListElement.addEventListener("click", (event) => {
-    const deleteButton = event.target.closest(
-      ".delete-subject-btn"
+    alert(
+        "🔔 Notifications\n\n" +
+        "You have 2 learning reminders for today."
     );
 
-    if (!deleteButton) return;
+});
 
-    const index = Number(deleteButton.dataset.index);
 
-    if (!subjects[index]) return;
+// ==========================================
+// STUDY SESSION TIMER
+// ==========================================
 
-    subjects.splice(index, 1);
+const studySessionBtn =
+    document.querySelector("#studySessionBtn");
 
-    saveSubjects();
-    renderSubjects();
-  });
+const studyTimer =
+    document.querySelector("#studyTimer");
+
+const closeTimer =
+    document.querySelector("#closeTimer");
+
+const startTimer =
+    document.querySelector("#startTimer");
+
+const stopTimer =
+    document.querySelector("#stopTimer");
+
+const timerDisplay =
+    document.querySelector("#timerDisplay");
+
+const studyTimeDisplay =
+    document.querySelector("#studyTime");
+
+let timerInterval = null;
+let sessionSeconds = 0;
+let isTimerRunning = false;
+
+let totalStudySeconds =
+    Number(localStorage.getItem("nexvioraStudyTime")) || 0;
+
+function formatStudyTime(seconds) {
+
+    const hours =
+        Math.floor(seconds / 3600);
+
+    const minutes =
+        Math.floor((seconds % 3600) / 60);
+
+    return `${hours}h ${minutes}m`;
 }
 
+function updateStudyTime() {
+
+    if (studyTimeDisplay) {
+
+        studyTimeDisplay.textContent =
+            formatStudyTime(totalStudySeconds);
+    }
+}
+
+function updateTimerDisplay() {
+
+    const hours =
+        Math.floor(sessionSeconds / 3600);
+
+    const minutes =
+        Math.floor((sessionSeconds % 3600) / 60);
+
+    const seconds =
+        sessionSeconds % 60;
+
+    timerDisplay.textContent =
+        `${String(hours).padStart(2, "0")}:` +
+        `${String(minutes).padStart(2, "0")}:` +
+        `${String(seconds).padStart(2, "0")}`;
+}
+
+studySessionBtn.addEventListener("click", (event) => {
+
+    event.preventDefault();
+
+    studyTimer.style.display = "flex";
+});
+
+closeTimer.addEventListener("click", () => {
+
+    studyTimer.style.display = "none";
+});
+
+startTimer.addEventListener("click", () => {
+
+    if (isTimerRunning) return;
+
+    isTimerRunning = true;
+
+    timerInterval = setInterval(() => {
+
+        sessionSeconds++;
+        totalStudySeconds++;
+
+        updateTimerDisplay();
+        updateStudyTime();
+
+        localStorage.setItem(
+            "nexvioraStudyTime",
+            totalStudySeconds
+        );
+
+    }, 1000);
+
+});
+
+stopTimer.addEventListener("click", () => {
+
+    clearInterval(timerInterval);
+
+    timerInterval = null;
+
+    isTimerRunning = false;
+});
+
 // ==========================================
-// AI PRACTICE SYSTEM
+// AI PRACTICE HISTORY
 // ==========================================
+
+const PRACTICE_HISTORY_KEY = "nexvioraPracticeHistory";
 
 let practiceHistory =
-  JSON.parse(localStorage.getItem("nexvioraPracticeHistory")) ||
-  [];
+    JSON.parse(localStorage.getItem(PRACTICE_HISTORY_KEY)) || [];
 
-function savePracticeHistory() {
-  localStorage.setItem(
-    "nexvioraPracticeHistory",
-    JSON.stringify(practiceHistory)
-  );
-}
-
-function addPracticeResult(topic, score) {
-  practiceHistory.push({
-    topic: topic || "General",
-    score: Number(score) || 0,
-    date: new Date().toISOString()
-  });
-
-  savePracticeHistory();
-  updatePracticeStats();
-  renderPracticeHistory();
-  updateOverallProgress();
-}
-
-function getAveragePracticeScore() {
-  if (practiceHistory.length === 0) return 0;
-
-  const total = practiceHistory.reduce(
-    (sum, item) => sum + Number(item.score || 0),
-    0
-  );
-
-  return Math.round((total / practiceHistory.length) * 10) / 10;
-}
-
-function getBestPracticeScore() {
-  if (practiceHistory.length === 0) return 0;
-
-  return Math.max(
-    ...practiceHistory.map((item) =>
-      Number(item.score || 0)
-    )
-  );
-}
-
-function updatePracticeStats() {
-  const totalQuestions =
+const totalQuestions =
     document.querySelector("#totalQuestions");
 
-  const averageScore =
+const averageScore =
     document.querySelector("#averageScore");
 
-  const bestScore =
+const bestScore =
     document.querySelector("#bestScore");
 
-  if (totalQuestions) {
-    totalQuestions.textContent = practiceHistory.length;
-  }
-
-  if (averageScore) {
-    averageScore.textContent =
-      getAveragePracticeScore();
-  }
-
-  if (bestScore) {
-    bestScore.textContent =
-      getBestPracticeScore();
-  }
-}
-
-function renderPracticeHistory() {
-  const historyContainer =
+const practiceHistoryList =
     document.querySelector("#practiceHistory");
 
-  if (!historyContainer) return;
 
-  historyContainer.innerHTML = "";
+// Save practice attempt
+function savePracticeAttempt(attempt) {
 
-  if (practiceHistory.length === 0) {
-    historyContainer.innerHTML = `
-      <div class="empty-state">
-        <p>No AI practice history yet.</p>
-      </div>
-    `;
+    practiceHistory.unshift(attempt);
 
-    return;
-  }
+    localStorage.setItem(
+        PRACTICE_HISTORY_KEY,
+        JSON.stringify(practiceHistory)
+    );
 
-  practiceHistory
-    .slice()
-    .reverse()
-    .forEach((item) => {
-      const historyItem =
-        document.createElement("div");
-
-      historyItem.className =
-        "practice-history-item";
-
-      const date = new Date(item.date);
-
-      historyItem.innerHTML = `
-        <div>
-          <strong>${item.topic}</strong>
-          <span>${date.toLocaleDateString()}</span>
-        </div>
-
-        <strong>${item.score}/10</strong>
-      `;
-
-      historyContainer.appendChild(historyItem);
-    });
+    updatePracticeStats();
+    renderPracticeHistory();
+    updateOverallProgress();
 }
 
-updatePracticeStats();
-renderPracticeHistory();
 
+// Update statistics
+function updatePracticeStats() {
+
+    if (!practiceHistory.length) {
+
+        totalQuestions.textContent = "0";
+        averageScore.textContent = "0/10";
+        bestScore.textContent = "0/10";
+
+        return;
+    }
+
+    const scores =
+        practiceHistory.map(item => Number(item.score));
+
+    const total =
+        scores.reduce((sum, score) => sum + score, 0);
+
+    const average =
+        total / scores.length;
+
+    const best =
+        Math.max(...scores);
+
+    totalQuestions.textContent =
+        practiceHistory.length;
+
+    averageScore.textContent =
+        `${average.toFixed(1)}/10`;
+
+    bestScore.textContent =
+        `${best}/10`;
+}
+
+
+// Render practice history
+function renderPracticeHistory() {
+
+    if (!practiceHistoryList) return;
+
+    if (!practiceHistory.length) {
+
+        practiceHistoryList.innerHTML = `
+            <div class="empty-history">
+                <span>🤖</span>
+                <p>No practice attempts yet.</p>
+                <small>
+                    Complete an AI Practice question to see your results here.
+                </small>
+            </div>
+        `;
+
+        return;
+    }
+
+    practiceHistoryList.innerHTML = "";
+
+    practiceHistory.forEach((attempt) => {
+
+        const historyItem =
+            document.createElement("div");
+
+        historyItem.className = "history-item";
+
+        historyItem.innerHTML = `
+            <div class="history-main">
+
+                <div class="history-info">
+
+                    <strong>
+                        ${attempt.topic}
+                    </strong>
+
+                    <span>
+                        ${attempt.subject} • ${attempt.level}
+                    </span>
+
+                    <small>
+                        ${attempt.date}
+                    </small>
+
+                </div>
+
+                <div class="history-score">
+                    <strong>
+                        ${attempt.score}/10
+                    </strong>
+
+                    <span>
+                        ${attempt.verdict}
+                    </span>
+                </div>
+
+            </div>
+
+            <div class="history-question">
+                <strong>Question:</strong>
+                <p>${attempt.question}</p>
+            </div>
+
+            <div class="history-answer">
+                <strong>Your Answer:</strong>
+                <p>${attempt.answer}</p>
+            </div>
+
+            <div class="history-feedback">
+                <strong>AI Feedback:</strong>
+                <p>${attempt.feedback}</p>
+            </div>
+        `;
+
+        practiceHistoryList.appendChild(historyItem);
+    });
+}
 // ==========================================
-// AI PRACTICE MODAL
+// AI PRACTICE
 // ==========================================
 
 const aiPracticeBtn =
-  document.querySelector("#aiPracticeBtn");
+    document.querySelector("#aiPracticeBtn");
 
-const aiPracticeModal =
-  document.querySelector("#aiPracticeModal");
+const aiModal =
+    document.querySelector("#aiModal");
 
-const closeAiPracticeModal =
-  document.querySelector("#closeAiPracticeModal");
+const closeAiModal =
+    document.querySelector("#closeAiModal");
 
-const aiPracticeForm =
-  document.querySelector("#aiPracticeForm");
+const generateQuestion =
+    document.querySelector("#generateQuestion");
 
-function openAiPracticeModal() {
-  if (!aiPracticeModal) return;
+const questionArea =
+    document.querySelector("#questionArea");
 
-  aiPracticeModal.classList.add("active");
-}
+const questionText =
+    document.querySelector("#questionText");
 
-function closeAiPracticeModalFn() {
-  if (!aiPracticeModal) return;
+const aiAnswer =
+    document.querySelector("#aiAnswer");
 
-  aiPracticeModal.classList.remove("active");
+const checkAnswer =
+    document.querySelector("#checkAnswer");
 
-  if (aiPracticeForm) {
-    aiPracticeForm.reset();
-  }
-}
+const aiResult =
+    document.querySelector("#aiResult");
 
-if (aiPracticeBtn) {
-  aiPracticeBtn.addEventListener(
-    "click",
-    openAiPracticeModal
-  );
-}
 
-if (closeAiPracticeModal) {
-  closeAiPracticeModal.addEventListener(
-    "click",
-    closeAiPracticeModalFn
-  );
-}
+// ==========================================
+// LEVEL BASED SUBJECT SYSTEM
+// ==========================================
 
-if (aiPracticeModal) {
-  aiPracticeModal.addEventListener(
-    "click",
-    (event) => {
-      if (event.target === aiPracticeModal) {
-        closeAiPracticeModalFn();
-      }
+const aiLevel =
+    document.querySelector("#aiLevel");
+
+const aiSubject =
+    document.querySelector("#aiSubject");
+
+const subjectsByLevel = {
+
+    "Class 6-8": [
+        "Mathematics",
+        "Science",
+        "English",
+        "Social Science",
+        "Computer"
+    ],
+
+    "Class 9-10": [
+        "Mathematics",
+        "Science",
+        "English",
+        "Social Science",
+        "Computer"
+    ],
+
+    "Class 11-12": [
+        "Physics",
+        "Chemistry",
+        "Mathematics",
+        "Biology",
+        "Computer Science",
+        "English"
+    ],
+
+    "BTech": [
+        "Data Structures",
+        "C++",
+        "Python",
+        "DBMS",
+        "Operating Systems",
+        "Computer Networks",
+        "Web Development",
+        "Digital Electronics"
+    ]
+};
+
+
+// ==========================================
+// UPDATE SUBJECTS BASED ON LEVEL
+// ==========================================
+
+aiLevel.addEventListener("change", () => {
+
+    const selectedLevel =
+        aiLevel.value;
+
+    aiSubject.innerHTML =
+        '<option value="">Select Subject</option>';
+
+    if (!selectedLevel) return;
+
+    subjectsByLevel[selectedLevel].forEach((subject) => {
+
+        const option =
+            document.createElement("option");
+
+        option.value = subject;
+        option.textContent = subject;
+
+        aiSubject.appendChild(option);
+    });
+
+});
+
+
+// ==========================================
+// OPEN AI PRACTICE
+// ==========================================
+
+aiPracticeBtn.addEventListener("click", () => {
+
+    aiModal.style.display = "flex";
+
+});
+
+
+// ==========================================
+// CLOSE AI PRACTICE
+// ==========================================
+
+closeAiModal.addEventListener("click", () => {
+
+    aiModal.style.display = "none";
+
+});
+
+aiModal.addEventListener("click", (event) => {
+
+    if (event.target === aiModal) {
+
+        aiModal.style.display = "none";
     }
-  );
-}
+
+});
+
 
 // ==========================================
-// AI PRACTICE FORM
+// GENERATE AI QUESTION
 // ==========================================
 
-if (aiPracticeForm) {
-  aiPracticeForm.addEventListener(
-    "submit",
-    async (event) => {
-      event.preventDefault();
+generateQuestion.addEventListener("click", async () => {
 
-      const topicInput =
-        aiPracticeForm.querySelector(
-          "#practiceTopic"
+    const level =
+        aiLevel.value;
+
+    const subject =
+        aiSubject.value;
+
+    const topic =
+        document.querySelector("#aiTopic").value.trim();
+
+
+    if (!level || !subject || !topic) {
+
+        alert(
+            "Please select your level, subject and enter a topic."
         );
 
-      const difficultyInput =
-        aiPracticeForm.querySelector(
-          "#practiceDifficulty"
-        );
+        return;
+    }
 
-      const topic = topicInput
-        ? topicInput.value.trim()
-        : "General";
 
-      const difficulty = difficultyInput
-        ? difficultyInput.value
-        : "Medium";
+    questionArea.style.display = "block";
 
-      const resultBox =
-        document.querySelector("#aiPracticeResult");
+    aiAnswer.value = "";
 
-      if (resultBox) {
-        resultBox.innerHTML = `
-          <div class="loading-state">
-            Generating your practice question...
-          </div>
-        `;
-      }
+    aiResult.textContent = "";
 
-      try {
-        const response = await fetch(
-          "/api/generate-question",
-          {
+    questionText.textContent =
+        "🤖 Nexviora AI is generating your question...";
+
+
+    try {
+
+        const response =
+            await fetch("/api/ask", {
+
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify({
+
+                    question:
+                        `Generate ONE practice question for a student.
+
+Education Level: ${level}
+Subject: ${subject}
+Topic: ${topic}
+
+Requirements:
+- Ask only one question.
+- Make the question appropriate for the student's education level.
+- Use language suitable for the student's level.
+- Do not give the answer.
+- Return only the question.`
+                })
+
+            });
+
+
+        const data =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                data.error || "AI request failed"
+            );
+        }
+
+
+        questionText.textContent =
+            data.answer;
+
+
+    } catch (error) {
+
+        console.error("AI Error:", error);
+
+        questionText.textContent =
+            "❌ AI question generate nahi ho paaya. Please try again.";
+    }
+
+});
+
+
+// ==========================================
+// CHECK ANSWER - AI EVALUATION
+// ==========================================
+
+checkAnswer.addEventListener("click", async () => {
+
+    const answer = aiAnswer.value.trim();
+    const question = questionText.textContent;
+    const level = aiLevel.value;
+    const subject = aiSubject.value;
+    const topic = document.querySelector("#aiTopic").value.trim();
+
+    if (!answer) {
+        alert("Please write your answer first.");
+        return;
+    }
+
+    if (!question || question.includes("generating")) {
+        alert("Please generate a question first.");
+        return;
+    }
+
+    checkAnswer.disabled = true;
+
+    aiResult.textContent =
+        "🤖 Nexviora AI is checking your answer...";
+
+    try {
+
+        const response = await fetch("/api/evaluate", {
+
             method: "POST",
+
             headers: {
-              "Content-Type": "application/json"
+                "Content-Type": "application/json"
             },
+
             body: JSON.stringify({
-              topic,
-              difficulty
+                question: question,
+                answer: answer,
+                level: level,
+                subject: subject,
+                topic: topic
             })
-          }
-        );
+
+        });
 
         const data = await response.json();
 
         if (!response.ok) {
-          throw new Error(
-            data.error || "Failed to generate question"
-          );
+            throw new Error(
+                data.error || "Evaluation failed"
+            );
         }
 
-        if (resultBox) {
-          resultBox.innerHTML = `
-            <div class="practice-question">
-              <h3>Practice Question</h3>
 
-              <p>
-                ${data.question || "Question generated successfully."}
-              </p>
+        // Show result
+        aiResult.innerHTML = `
+            <strong>Score: ${data.score}/10</strong>
+            <br><br>
+            <strong>${data.verdict}</strong>
+            <br><br>
+            ${data.feedback}
+        `;
 
-              <div class="practice-answer-area">
-                <textarea
-                  id="practiceAnswer"
-                  placeholder="Write your answer here..."
-                ></textarea>
 
-                <button
-                  type="button"
-                  id="submitPracticeAnswer"
-                  class="primary-btn"
-                >
-                  Submit Answer
-                </button>
-              </div>
+        // ==========================================
+        // SAVE PRACTICE ATTEMPT
+        // ==========================================
 
-              <div id="practiceFeedback"></div>
-            </div>
-          `;
-        }
+        const attempt = {
 
-        const submitAnswerBtn =
-          document.querySelector(
-            "#submitPracticeAnswer"
-          );
+            date: new Date().toLocaleString(),
 
-        if (submitAnswerBtn) {
-          submitAnswerBtn.addEventListener(
-            "click",
-            async () => {
-              const answerInput =
-                document.querySelector(
-                  "#practiceAnswer"
-                );
+            level: level,
 
-              const feedback =
-                document.querySelector(
-                  "#practiceFeedback"
-                );
+            subject: subject,
 
-              const answer = answerInput
-                ? answerInput.value.trim()
-                : "";
+            topic: topic,
 
-              if (!answer) {
-                if (feedback) {
-                  feedback.innerHTML = `
-                    <p>Please write an answer first.</p>
-                  `;
-                }
+            question: question,
 
-                return;
-              }
+            answer: answer,
 
-              if (feedback) {
-                feedback.innerHTML = `
-                  <div class="loading-state">
-                    Checking your answer...
-                  </div>
-                `;
-              }
+            score: Number(data.score),
 
-              try {
-                const checkResponse =
-                  await fetch(
-                    "/api/check-answer",
-                    {
-                      method: "POST",
-                      headers: {
-                        "Content-Type":
-                          "application/json"
-                      },
-                      body: JSON.stringify({
-                        question:
-                          data.question || "",
-                        answer,
-                        topic,
-                        difficulty
-                      })
-                    }
-                  );
+            verdict: data.verdict,
 
-                const checkData =
-                  await checkResponse.json();
+            feedback: data.feedback
 
-                if (!checkResponse.ok) {
-                  throw new Error(
-                    checkData.error ||
-                      "Failed to check answer"
-                  );
-                }
+        };
 
-                const score = Number(
-                  checkData.score || 0
-                );
 
-                addPracticeResult(topic, score);
+        savePracticeAttempt(attempt);
 
-                if (feedback) {
-                  feedback.innerHTML = `
-                    <div class="practice-feedback">
-                      <h4>Score: ${score}/10</h4>
-                      <p>
-                        ${
-                          checkData.feedback ||
-                          "Good effort!"
-                        }
-                      </p>
-                    </div>
-                  `;
-                }
-              } catch (error) {
-                console.error(
-                  "Answer checking error:",
-                  error
-                );
-
-                if (feedback) {
-                  feedback.innerHTML = `
-                    <p>
-                      Unable to check the answer right now.
-                    </p>
-                  `;
-                }
-              }
-            }
-          );
-        }
-      } catch (error) {
-        console.error(
-          "AI Practice error:",
-          error
+        console.log(
+            "Practice attempt saved successfully:",
+            attempt
         );
 
-        if (resultBox) {
-          resultBox.innerHTML = `
-            <div class="error-state">
-              <p>
-                Unable to generate the question.
-              </p>
-            </div>
-          `;
-        }
-      }
+
+    } catch (error) {
+
+        console.error(
+            "Evaluation Error:",
+            error
+        );
+
+        aiResult.textContent =
+            "❌ Answer evaluate nahi ho paaya. Please try again.";
+
+    } finally {
+
+        checkAnswer.disabled = false;
+
     }
-  );
+
+});
+// ==========================================
+// MY SUBJECTS SYSTEM
+// ==========================================
+
+const SUBJECTS_KEY = "nexvioraSubjects";
+
+
+let subjects =
+    JSON.parse(localStorage.getItem(SUBJECTS_KEY)) || [
+
+        {
+            name: "Data Structures",
+            short: "DS",
+            completed: 12,
+            total: 18,
+            color: "purple-bg"
+        },
+
+        {
+            name: "Digital Electronics",
+            short: "DE",
+            completed: 9,
+            total: 14,
+            color: "blue-bg"
+        },
+
+        {
+            name: "Python",
+            short: "PY",
+            completed: 15,
+            total: 18,
+            color: "green-bg"
+        }
+
+    ];
+
+
+const subjectsList =
+    document.querySelector("#subjectsList");
+
+const manageSubjectsBtn =
+    document.querySelector("#manageSubjectsBtn");
+
+const subjectModal =
+    document.querySelector("#subjectModal");
+
+const closeSubjectModal =
+    document.querySelector("#closeSubjectModal");
+
+const subjectName =
+    document.querySelector("#subjectName");
+
+const completedTopics =
+    document.querySelector("#completedTopics");
+
+const totalTopics =
+    document.querySelector("#totalTopics");
+
+const saveSubjectBtn =
+    document.querySelector("#saveSubjectBtn");
+
+
+// Save subjects
+function saveSubjects() {
+
+    localStorage.setItem(
+        SUBJECTS_KEY,
+        JSON.stringify(subjects)
+    );
 }
 
-// ==========================================
-// HISTORY TOGGLE
-// ==========================================
 
-const historyToggleBtn =
-  document.querySelector("#historyToggleBtn");
+// Get short name
+function getSubjectShortName(name) {
 
-const practiceHistorySection =
-  document.querySelector(
-    ".practice-history-section"
-  );
+    const words =
+        name.trim().split(/\s+/);
 
-if (
-  historyToggleBtn &&
-  practiceHistorySection
-) {
-  historyToggleBtn.addEventListener(
+    if (words.length === 1) {
+
+        return words[0]
+            .substring(0, 2)
+            .toUpperCase();
+    }
+
+    return words
+        .map(word => word[0])
+        .join("")
+        .substring(0, 2)
+        .toUpperCase();
+}
+
+
+// Get subject color
+function getSubjectColor(index) {
+
+    const colors = [
+        "purple-bg",
+        "blue-bg",
+        "green-bg"
+    ];
+
+    return colors[index % colors.length];
+}
+
+
+// Render subjects
+function renderSubjects() {
+
+    if (!subjectsList) return;
+
+    subjectsList.innerHTML = "";
+
+
+    subjects.forEach((subject, index) => {
+
+        const percentage =
+            subject.total > 0
+                ? Math.round(
+                    (subject.completed / subject.total) * 100
+                )
+                : 0;
+
+
+        const subjectElement =
+            document.createElement("div");
+
+        subjectElement.className =
+            "subject";
+
+
+        subjectElement.innerHTML = `
+
+            <div class="subject-icon ${subject.color}">
+                ${subject.short}
+            </div>
+
+
+            <div class="subject-info">
+
+                <strong>
+                    ${subject.name}
+                </strong>
+
+                <span>
+                    ${subject.completed} / ${subject.total} topics
+                </span>
+
+
+                <div class="progress-line">
+
+                    <div
+                        style="width: ${percentage}%"
+                    ></div>
+
+                </div>
+
+            </div>
+
+
+            <strong>
+                ${percentage}%
+            </strong>
+
+
+            <button
+                class="delete-subject"
+                data-index="${index}"
+            >
+                🗑
+            </button>
+
+        `;
+
+
+        subjectsList.appendChild(
+            subjectElement
+        );
+
+    });
+
+}
+
+
+// Open modal
+manageSubjectsBtn.addEventListener(
     "click",
     () => {
-      practiceHistorySection.classList.toggle(
-        "history-open"
-      );
 
-      const isOpen =
-        practiceHistorySection.classList.contains(
-          "history-open"
+        subjectModal.style.display =
+            "flex";
+
+        subjectName.focus();
+
+    }
+);
+
+
+// Close modal
+closeSubjectModal.addEventListener(
+    "click",
+    () => {
+
+        subjectModal.style.display =
+            "none";
+
+    }
+);
+
+
+// Close on outside click
+subjectModal.addEventListener(
+    "click",
+    (event) => {
+
+        if (event.target === subjectModal) {
+
+            subjectModal.style.display =
+                "none";
+        }
+
+    }
+);
+
+
+// Add subject
+saveSubjectBtn.addEventListener(
+    "click",
+    () => {
+
+        const name =
+            subjectName.value.trim();
+
+        const completed =
+            Number(completedTopics.value);
+
+        const total =
+            Number(totalTopics.value);
+
+
+        if (!name) {
+
+            alert(
+                "Please enter subject name."
+            );
+
+            return;
+        }
+
+
+        if (
+            Number.isNaN(completed) ||
+            Number.isNaN(total) ||
+            total <= 0 ||
+            completed < 0
+        ) {
+
+            alert(
+                "Please enter valid topic numbers."
+            );
+
+            return;
+        }
+
+
+        if (completed > total) {
+
+            alert(
+                "Completed topics cannot be greater than total topics."
+            );
+
+            return;
+        }
+
+
+        const newSubject = {
+
+            name: name,
+
+            short:
+                getSubjectShortName(name),
+
+            completed: completed,
+
+            total: total,
+
+            color:
+                getSubjectColor(
+                    subjects.length
+                )
+
+        };
+
+
+        subjects.push(
+            newSubject
         );
 
-      historyToggleBtn.textContent = isOpen
-        ? "Hide History ↑"
-        : "View History →";
+
+        saveSubjects();
+
+        renderSubjects();
+
+
+        subjectName.value = "";
+
+        completedTopics.value = "";
+
+        totalTopics.value = "";
+
+
+        subjectModal.style.display =
+            "none";
+
     }
-  );
-}
+);
+
+
+// Delete subject
+subjectsList.addEventListener(
+    "click",
+    (event) => {
+
+        const deleteButton =
+            event.target.closest(
+                ".delete-subject"
+            );
+
+
+        if (!deleteButton) return;
+
+
+        const index =
+            Number(
+                deleteButton.dataset.index
+            );
+
+
+        subjects.splice(index, 1);
+
+
+        saveSubjects();
+
+        renderSubjects();
+
+    }
+);
+
 
 // ==========================================
-// STUDY COPILOT
+// INITIAL LOAD
 // ==========================================
 
-(function initStudyCopilot() {
-  const copilotToggle =
-    document.querySelector("#copilotToggle");
+renderTasks();
+renderSubjects();
 
-  const copilotPanel =
-    document.querySelector("#copilotPanel");
+updateStudyTime();
 
-  const copilotClose =
-    document.querySelector("#copilotClose");
+updateTimerDisplay();
+updatePracticeStats();
+renderPracticeHistory();
+updateOverallProgress();
 
-  const copilotInput =
-    document.querySelector("#copilotInput");
+console.log(
+    "Nexviora loaded successfully 🚀"
+);
 
-  const copilotSend =
-    document.querySelector("#copilotSend");
+/* NEXVIORA JARVIS: TEXT + IMAGE + VOICE */
+(() => {
+    const style = document.createElement("style");
+    style.textContent = `
+      #jarvisPanel {
+        position:fixed; right:20px; bottom:85px; z-index:9999;
+        width:min(360px,calc(100vw - 28px)); height:460px;
+        background:white; color:#222; border:1px solid #ddd;
+        border-radius:16px; box-shadow:0 8px 35px #0002;
+        display:none; flex-direction:column; overflow:hidden;
+        font:14px Arial,sans-serif;
+      }
+      #jarvisHead {background:#5636c9;color:white;padding:15px;
+        display:flex;justify-content:space-between;font-weight:bold}
+      #jarvisMessages {flex:1;overflow:auto;padding:12px}
+      .jarvisBubble {padding:10px;margin:8px 0;border-radius:10px;
+        background:#f0edff;white-space:pre-wrap;overflow-wrap:anywhere}
+      .jarvisUser {background:#e7f5e9}
+      #jarvisControls {padding:10px;display:grid;gap:7px;
+        border-top:1px solid #eee}
+      #jarvisControls input[type=text] {width:100%;box-sizing:border-box;
+        padding:10px;border:1px solid #ccc;border-radius:8px}
+      #jarvisControls button,#jarvisToggle {
+        padding:10px;border:0;border-radius:8px;cursor:pointer}
+      #jarvisToggle {position:fixed;right:20px;bottom:20px;z-index:9998;
+        background:#5636c9;color:white;font-weight:bold}
+      #jarvisPreview {max-width:100%;max-height:100px;display:none}
+    `;
+    document.head.appendChild(style);
 
-  const copilotMic =
-    document.querySelector("#copilotMic");
+    const toggle = document.createElement("button");
+    toggle.id = "jarvisToggle";
+    toggle.textContent = "🤖 Ask JARVIS";
+    document.body.appendChild(toggle);
 
-  const copilotImage =
-    document.querySelector("#copilotImage");
+    const panel = document.createElement("section");
+    panel.id = "jarvisPanel";
+    panel.innerHTML = `
+      <div id="jarvisHead">
+        <span>🤖 Nexviora JARVIS</span>
+        <button id="jarvisClose" aria-label="Close">✕</button>
+      </div>
+      <div id="jarvisMessages" aria-live="polite">
+        <div class="jarvisBubble">Hi! Type, speak, or upload a question photo.</div>
+      </div>
+      <div id="jarvisControls">
+        <img id="jarvisPreview" alt="Selected question photo">
+        <input id="jarvisInput" type="text" placeholder="Ask anything...">
+        <input id="jarvisFile" type="file" accept="image/png,image/jpeg,image/webp" hidden>
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+          <button id="jarvisSend">Send</button>
+          <button id="jarvisMic">🎙️ Speak</button>
+          <button id="jarvisPhoto">📷 Photo</button>
+          <button id="jarvisSpeak">🔊 Read answers: ON</button>
+        </div>
+        <small>Voice requires microphone permission. Image AI may require a paid model.</small>
+      </div>`;
+    document.body.appendChild(panel);
 
-  const copilotMessages =
-    document.querySelector("#copilotMessages");
+    const $ = id => document.getElementById(id);
+    const messages = $("jarvisMessages");
+    const input = $("jarvisInput");
+    const fileInput = $("jarvisFile");
+    const preview = $("jarvisPreview");
+    let imageData = null;
+    let speakAnswers = true;
+    let busy = false;
 
-  const openCopilotBtn =
-    document.querySelector("#openCopilotBtn");
+    toggle.onclick = () => {
+        panel.style.display = "flex";
+        toggle.style.display = "none";
+        input.focus();
+    };
+    $("jarvisClose").onclick = () => {
+        panel.style.display = "none";
+        toggle.style.display = "block";
+    };
 
-  function openCopilot() {
-    if (!copilotPanel) return;
-
-    copilotPanel.classList.add("active");
-
-    if (copilotInput) {
-      setTimeout(() => {
-        copilotInput.focus();
-      }, 150);
+    function bubble(text, isUser = false) {
+        const el = document.createElement("div");
+        el.className = "jarvisBubble" + (isUser ? " jarvisUser" : "");
+        el.textContent = text;
+        messages.appendChild(el);
+        messages.scrollTop = messages.scrollHeight;
+        return el;
     }
-  }
 
-  function closeCopilot() {
-    if (!copilotPanel) return;
+    fileInput.onchange = () => {
+        const file = fileInput.files[0];
+        if (!file) return;
 
-    copilotPanel.classList.remove("active");
-  }
+        if (file.size > 5 * 1024 * 1024) {
+            bubble("Please choose an image smaller than 5 MB.");
+            fileInput.value = "";
+            return;
+        }
 
-  function addCopilotMessage(
-    message,
-    sender = "ai"
-  ) {
-    if (!copilotMessages) return;
+        const reader = new FileReader();
+        reader.onload = () => {
+            imageData = reader.result;
+            preview.src = imageData;
+            preview.style.display = "block";
+        };
+        reader.readAsDataURL(file);
+    };
 
-    const messageElement =
-      document.createElement("div");
+    $("jarvisPhoto").onclick = () => fileInput.click();
 
-    messageElement.className =
-      `copilot-message ${sender}`;
+    $("jarvisSpeak").onclick = () => {
+        speakAnswers = !speakAnswers;
+        $("jarvisSpeak").textContent =
+            "🔊 Read answers: " + (speakAnswers ? "ON" : "OFF");
+        if (!speakAnswers) speechSynthesis.cancel();
+    };
 
-    messageElement.textContent = message;
+    async function sendMessage(textFromVoice = "") {
+        const message = (textFromVoice || input.value).trim();
+        if (busy || (!message && !imageData)) return;
 
-    copilotMessages.appendChild(
-      messageElement
-    );
+        busy = true;
+        $("jarvisSend").disabled = true;
 
-    copilotMessages.scrollTop =
-      copilotMessages.scrollHeight;
-  }
+        if (message) bubble(message, true);
+        if (imageData) bubble("📷 Image attached", true);
 
-  async function sendCopilotMessage(
-    message
-  ) {
-    const cleanMessage =
-      String(message || "").trim();
+        input.value = "";
+        const attachedImage = imageData;
+        imageData = null;
+        preview.removeAttribute("src");
+        preview.style.display = "none";
+        fileInput.value = "";
 
-    if (!cleanMessage) return;
+        const loading = bubble("JARVIS is thinking...");
 
-    addCopilotMessage(
-      cleanMessage,
-      "user"
-    );
+        try {
+            const response = await fetch("/api/assistant", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    message,
+                    imageData: attachedImage
+                })
+            });
 
-    if (copilotInput) {
-      copilotInput.value = "";
+            const data = await response.json();
+            if (!response.ok) throw new Error(data.error || "Request failed");
+
+            loading.textContent = data.answer;
+
+            if (speakAnswers && "speechSynthesis" in window) {
+                speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(data.answer);
+                utterance.lang = "hi-IN";
+                speechSynthesis.speak(utterance);
+            }
+        } catch (error) {
+            loading.textContent = "Error: " + error.message;
+        } finally {
+            busy = false;
+            $("jarvisSend").disabled = false;
+            input.focus();
+        }
     }
 
-    addCopilotMessage(
-      "Thinking...",
-      "ai"
-    );
+    $("jarvisSend").onclick = () => sendMessage();
+    input.addEventListener("keydown", e => {
+        if (e.key === "Enter") sendMessage();
+    });
 
-    const loadingMessage =
-      copilotMessages
-        ? copilotMessages.lastElementChild
-        : null;
 
-    try {
-      const response = await fetch(
-        "/api/jarvis",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            message: cleanMessage
-          })
-        }
-      );
+const SpeechRecognition =
+    window.SpeechRecognition || window.webkitSpeechRecognition;
 
-      const data = await response.json();
+let recognition = null;
+let isListening = false;
 
-      if (!response.ok) {
-        throw new Error(
-          data.error || "Request failed"
-        );
-      }
-
-      if (loadingMessage) {
-        loadingMessage.textContent =
-          data.reply ||
-          data.message ||
-          "I couldn't generate a response.";
-      }
-    } catch (error) {
-      console.error(
-        "Study Copilot error:",
-        error
-      );
-
-      if (loadingMessage) {
-        loadingMessage.textContent =
-          "Sorry, I couldn't connect to the AI right now.";
-      }
+$("jarvisMic").onclick = () => {
+    if (!SpeechRecognition) {
+        bubble("Voice input is not supported. Please use updated Chrome.");
+        return;
     }
-  }
 
-  if (copilotToggle) {
-    copilotToggle.addEventListener(
-      "click",
-      () => {
-        if (
-          copilotPanel &&
-          copilotPanel.classList.contains(
-            "active"
-          )
-        ) {
-          closeCopilot();
-        } else {
-          openCopilot();
-        }
-      }
-    );
-  }
+    if (isListening) {
+        recognition.stop();
+        return;
+    }
 
-  if (openCopilotBtn) {
-    openCopilotBtn.addEventListener(
-      "click",
-      openCopilot
-    );
-  }
-
-  if (copilotClose) {
-    copilotClose.addEventListener(
-      "click",
-      closeCopilot
-    );
-  }
-
-  if (copilotSend) {
-    copilotSend.addEventListener(
-      "click",
-      () => {
-        if (!copilotInput) return;
-
-        sendCopilotMessage(
-          copilotInput.value
-        );
-      }
-    );
-  }
-
-  if (copilotInput) {
-    copilotInput.addEventListener(
-      "keydown",
-      (event) => {
-        if (
-          event.key === "Enter" &&
-          !event.shiftKey
-        ) {
-          event.preventDefault();
-
-          sendCopilotMessage(
-            copilotInput.value
-          );
-        }
-      }
-    );
-  }
-
-  // ========================================
-  // VOICE INPUT
-  // ========================================
-
-  let recognition = null;
-
-  if (
-    "webkitSpeechRecognition" in window ||
-    "SpeechRecognition" in window
-  ) {
-    const SpeechRecognition =
-      window.SpeechRecognition ||
-      window.webkitSpeechRecognition;
-
-    recognition =
-      new SpeechRecognition();
-
-    recognition.lang = "en-IN";
+    recognition = new SpeechRecognition();
+    recognition.lang = "en-IN"; // English voice; use "hi-IN" for Hindi
+    recognition.interimResults = true;
     recognition.continuous = false;
-    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+
+    let finalTranscript = "";
+
+    recognition.onstart = () => {
+        isListening = true;
+        $("jarvisMic").textContent = "🛑 Stop Listening";
+    };
 
     recognition.onresult = (event) => {
-      const transcript =
-        event.results[0][0].transcript;
+        let interimTranscript = "";
 
-      if (copilotInput) {
-        copilotInput.value =
-          transcript;
-      }
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+            const transcript = event.results[i][0].transcript;
 
-      sendCopilotMessage(transcript);
+            if (event.results[i].isFinal) {
+                finalTranscript += transcript + " ";
+            } else {
+                interimTranscript += transcript;
+            }
+        }
+
+        input.value = (finalTranscript + interimTranscript).trim();
     };
 
     recognition.onerror = (event) => {
-      console.error(
-        "Speech recognition error:",
-        event.error
-      );
+        if (event.error === "no-speech") {
+            bubble("Voice not detected. Please speak after pressing the mic.");
+        } else if (event.error === "not-allowed") {
+            bubble("Microphone blocked. Allow microphone access in Chrome settings.");
+        } else {
+            bubble("Voice error: " + event.error);
+        }
     };
-  }
 
-  if (copilotMic) {
-    copilotMic.addEventListener(
-      "click",
-      () => {
-        if (!recognition) {
-          alert(
-            "Voice input is not supported in this browser."
-          );
+    recognition.onend = () => {
+        isListening = false;
+        $("jarvisMic").textContent = "🎙️ Speak";
 
-          return;
+        if (finalTranscript.trim()) {
+            input.value = finalTranscript.trim();
+            sendMessage();
         }
+    };
 
-        try {
-          recognition.start();
-        } catch (error) {
-          console.error(
-            "Voice start error:",
-            error
-          );
-        }
-      }
-    );
-  }
-
-  // ========================================
-  // IMAGE INPUT
-  // ========================================
-
-  if (copilotImage) {
-    copilotImage.addEventListener(
-      "change",
-      async (event) => {
-        const file =
-          event.target.files &&
-          event.target.files[0];
-
-        if (!file) return;
-
-        const reader =
-          new FileReader();
-
-        reader.onload = async () => {
-          try {
-            addCopilotMessage(
-              "I uploaded an image. Please analyze it.",
-              "user"
-            );
-
-            addCopilotMessage(
-              "Analyzing the image...",
-              "ai"
-            );
-
-            const response =
-              await fetch(
-                "/api/jarvis",
-                {
-                  method: "POST",
-                  headers: {
-                    "Content-Type":
-                      "application/json"
-                  },
-                  body: JSON.stringify({
-                    message:
-                      "Analyze this image and explain what it contains or what I should understand from it.",
-                    image:
-                      reader.result
-                  })
-                }
-              );
-
-            const data =
-              await response.json();
-
-            if (!response.ok) {
-              throw new Error(
-                data.error ||
-                  "Image request failed"
-              );
-            }
-
-            if (copilotMessages) {
-              const lastMessage =
-                copilotMessages.lastElementChild;
-
-              if (lastMessage) {
-                lastMessage.textContent =
-                  data.reply ||
-                  data.message ||
-                  "I couldn't analyze the image.";
-              }
-            }
-          } catch (error) {
-            console.error(
-              "Image analysis error:",
-              error
-            );
-
-            if (copilotMessages) {
-              const lastMessage =
-                copilotMessages.lastElementChild;
-
-              if (lastMessage) {
-                lastMessage.textContent =
-                  "Sorry, I couldn't analyze that image.";
-              }
-            }
-          }
-        };
-
-        reader.readAsDataURL(file);
-      }
-    );
-  }
+    try {
+        recognition.start();
+    } catch (error) {
+        isListening = false;
+        $("jarvisMic").textContent = "🎙️ Speak";
+        bubble("Could not start microphone. Please try again.");
+    }
+};
 })();
-
-// ==========================================
-// OVERALL PROGRESS
-// ==========================================
-
 function updateOverallProgress() {
-  const progressElements =
-    document.querySelectorAll(
-      ".overall-progress-value"
-    );
-
-  if (
-    !progressElements ||
-    progressElements.length === 0
-  ) {
-    return;
-  }
-
-  const taskProgress =
-    tasks.length > 0
-      ? (tasks.filter(
-          (task) => task.completed
-        ).length /
-          tasks.length) *
-        100
-      : 0;
-
-  const subjectProgress =
-    subjects.length > 0
-      ? subjects.reduce(
-          (sum, subject) =>
-            sum +
-            Number(subject.progress || 0),
-          0
-        ) / subjects.length
-      : 0;
-
-  const practiceProgress =
-    practiceHistory.length > 0
-      ? (getAveragePracticeScore() / 10) *
-        100
-      : 0;
-
-  const overall =
-    Math.round(
-      (taskProgress +
-        subjectProgress +
-        practiceProgress) /
-        3
-    );
-
-  progressElements.forEach(
-    (element) => {
-      element.textContent =
-        `${overall}%`;
-    }
-  );
-
-  const progressBars =
-    document.querySelectorAll(
-      ".overall-progress-fill"
-    );
-
-  progressBars.forEach(
-    (bar) => {
-      bar.style.width =
-        `${overall}%`;
-    }
-  );
+    // Progress update temporarily skipped
 }
-
-updateOverallProgress();
-
-// ==========================================
-// APP VIEW ROUTER
-// ==========================================
-
-function initAppRouter() {
-  const appView =
-    document.querySelector("#appView");
-
-  const navItems =
-    document.querySelectorAll(
-      ".sidebar-nav a, .sidebar-nav button, .nav-item"
-    );
-
-  if (!appView) return;
-
-  function getViewName(element) {
-    const id =
-      element.id ||
-      "";
-
-    const text =
-      element.textContent
-        .trim()
-        .toLowerCase();
-
-    if (
-      id.includes("dashboard") ||
-      text === "dashboard"
-    ) {
-      return "dashboard";
-    }
-
-    if (
-      id.includes("subject") ||
-      text.includes("my subjects")
-    ) {
-      return "subjects";
-    }
-
-    if (
-      id.includes("task") ||
-      text === "tasks"
-    ) {
-      return "tasks";
-    }
-
-    if (
-      id.includes("study") ||
-      text.includes("study sessions")
-    ) {
-      return "sessions";
-    }
-
-    if (
-      id.includes("practice") ||
-      text.includes("ai practice")
-    ) {
-      return "practice";
-    }
-
-    if (
-      id.includes("analytic") ||
-      text.includes("analytics")
-    ) {
-      return "analytics";
-    }
-
-    if (
-      id.includes("weak") ||
-      text.includes("weak topics")
-    ) {
-      return "weak";
-    }
-
-    if (
-      id.includes("setting") ||
-      text.includes("settings")
-    ) {
-      return "settings";
-    }
-
-    return null;
-  }
-
-  function showDashboard() {
-    appView.classList.remove(
-      "app-view-visible"
-    );
-  }
-
-  function renderSubjectsPage() {
-    appView.innerHTML = `
-      <section class="page-section">
-        <div class="page-header">
-          <div>
-            <span class="page-kicker">Learning</span>
-            <h2>My Subjects</h2>
-            <p>
-              Track your progress across all subjects.
-            </p>
-          </div>
-
-          <button
-            class="primary-btn"
-            id="pageAddSubjectBtn"
-          >
-            + Add Subject
-          </button>
-        </div>
-
-        <div class="subjects-page-grid">
-          ${
-            subjects.length
-              ? subjects
-                  .map(
-                    (subject, index) => `
-                      <article class="subject-page-card">
-                        <div class="subject-card-header">
-                          <div>
-                            <span class="subject-short">
-                              ${subject.shortName}
-                            </span>
-                            <h3>
-                              ${subject.name}
-                            </h3>
-                          </div>
-
-                          <button
-                            class="delete-subject-btn"
-                            data-page-index="${index}"
-                          >
-                            ×
-                          </button>
-                        </div>
-
-                        <div class="progress-row">
-                          <span>Progress</span>
-                          <strong>
-                            ${subject.progress}%
-                          </strong>
-                        </div>
-
-                        <div class="progress-bar">
-                          <div
-                            class="progress-fill"
-                            style="width:${subject.progress}%"
-                          ></div>
-                        </div>
-                      </article>
-                    `
-                  )
-                  .join("")
-              : `
-                <div class="empty-state large">
-                  <h3>No subjects yet</h3>
-                  <p>
-                    Add your first subject to start tracking progress.
-                  </p>
-                </div>
-              `
-          }
-        </div>
-      </section>
-    `;
-
-    appView.classList.add(
-      "app-view-visible"
-    );
-  }
-
-  function renderWeakTopicsPage() {
-
-    const addButton =
-      document.querySelector(
-        "#pageAddSubjectBtn"
-      );
-
-    if (addButton) {
-      addButton.addEventListener(
-        "click",
-        openSubjectModal
-      );
-    }
-
-    appView
-      .querySelectorAll(
-        ".delete-subject-btn"
-      )
-      .forEach((button) => {
-        button.addEventListener(
-          "click",
-          () => {
-            const index = Number(
-              button.dataset.pageIndex
-            );
-
-            if (!subjects[index]) return;
-
-            subjects.splice(index, 1);
-
-            saveSubjects();
-            renderSubjects();
-            renderSubjectsPage();
-          }
-        );
-      });
-  }
-
-  function renderTasksPage() {
-    appView.innerHTML = `
-      <section class="page-section">
-        <div class="page-header">
-          <div>
-            <span class="page-kicker">Productivity</span>
-            <h2>Tasks</h2>
-            <p>
-              Manage your daily study tasks.
-            </p>
-          </div>
-
-          <button
-            class="primary-btn"
-            id="pageAddTaskBtn"
-          >
-            + Add Task
-          </button>
-        </div>
-
-        <div class="tasks-page-list">
-          ${
-            tasks.length
-              ? tasks
-                  .map(
-                    (task, index) => `
-                      <article class="task-page-card ${
-                        task.completed
-                          ? "completed"
-                          : ""
-                      }">
-                        <div class="task-left">
-                          <input
-                            type="checkbox"
-                            class="page-task-checkbox"
-                            data-page-index="${index}"
-                            ${
-                              task.completed
-                                ? "checked"
-                                : ""
-                            }
-                          >
-
-                          <div>
-                            <h3>
-                              ${task.name}
-                            </h3>
-
-                            <p>
-                              ${task.duration} min
-                            </p>
-                          </div>
-                        </div>
-
-                        <div class="task-right">
-                          <span class="priority-badge ${task.priority.toLowerCase()}">
-                            ${task.priority}
-                          </span>
-
-                          <button
-                            class="delete-page-task-btn"
-                            data-page-index="${index}"
-                          >
-                            Delete
-                          </button>
-                        </div>
-                      </article>
-                    `
-                  )
-                  .join("")
-              : `
-                <div class="empty-state large">
-                  <h3>No tasks yet</h3>
-                  <p>
-                    Add a task to start planning your study day.
-                  </p>
-                </div>
-              `
-          }
-        </div>
-      </section>
-    `;
-
-    appView.classList.add(
-      "app-view-visible"
-    );
-
-    const addButton =
-      document.querySelector(
-        "#pageAddTaskBtn"
-      );
-
-    if (addButton) {
-      addButton.addEventListener(
-        "click",
-        openTaskModal
-      );
-    }
-
-    appView
-      .querySelectorAll(
-        ".page-task-checkbox"
-      )
-      .forEach((checkbox) => {
-        checkbox.addEventListener(
-          "change",
-          () => {
-            const index = Number(
-              checkbox.dataset.pageIndex
-            );
-
-            if (!tasks[index]) return;
-
-            tasks[index].completed =
-              checkbox.checked;
-
-            saveTasks();
-            renderTasks();
-            renderTasksPage();
-          }
-        );
-      });
-
-    appView
-      .querySelectorAll(
-        ".delete-page-task-btn"
-      )
-      .forEach((button) => {
-        button.addEventListener(
-          "click",
-          () => {
-            const index = Number(
-              button.dataset.pageIndex
-            );
-
-            if (!tasks[index]) return;
-
-            tasks.splice(index, 1);
-
-            saveTasks();
-            renderTasks();
-            renderTasksPage();
-          }
-        );
-      });
-  }
-
-  function renderSessionsPage() {
-    const totalMinutes =
-      getTotalStudyMinutes();
-
-    const hours =
-      Math.floor(totalMinutes / 60);
-
-    const minutes =
-      totalMinutes % 60;
-
-    appView.innerHTML = `
-      <section class="page-section">
-        <div class="page-header">
-          <div>
-            <span class="page-kicker">Focus</span>
-            <h2>Study Sessions</h2>
-            <p>
-              Build consistent study time with focused sessions.
-            </p>
-          </div>
-
-          <button
-            class="primary-btn"
-            id="pageStartSessionBtn"
-          >
-            Start Session
-          </button>
-        </div>
-
-        <div class="session-summary-grid">
-          <article class="summary-card">
-            <span>Total Study Time</span>
-            <strong>
-              ${hours}h ${minutes}m
-            </strong>
-          </article>
-
-          <article class="summary-card">
-            <span>Sessions</span>
-            <strong>
-              ${studySessions.length}
-            </strong>
-          </article>
-        </div>
-
-        <div class="session-history">
-          <h3>Recent Sessions</h3>
-
-          ${
-            studySessions.length
-              ? studySessions
-                  .slice()
-                  .reverse()
-                  .slice(0, 10)
-                  .map(
-                    (session) => `
-                      <div class="session-row">
-                        <span>
-                          ${new Date(
-                            session.date
-                          ).toLocaleDateString()}
-                        </span>
-
-                        <strong>
-                          ${session.minutes} min
-                        </strong>
-                      </div>
-                    `
-                  )
-                  .join("")
-              : `
-                <div class="empty-state">
-                  <p>
-                    No study sessions recorded yet.
-                  </p>
-                </div>
-              `
-          }
-        </div>
-      </section>
-    `;
-
-    appView.classList.add(
-      "app-view-visible"
-    );
-
-    const startButton =
-      document.querySelector(
-        "#pageStartSessionBtn"
-      );
-
-    if (startButton) {
-      startButton.addEventListener(
-        "click",
-        () => {
-          const timerModal =
-            document.querySelector(
-              "#studyTimerModal"
-            );
-
-          if (timerModal) {
-            timerModal.classList.add(
-              "active"
-            );
-          }
-        }
-      );
-    }
-  }
-
-  function renderPracticePage() {
-    appView.innerHTML = `
-      <section class="page-section">
-        <div class="page-header">
-          <div>
-            <span class="page-kicker">AI Learning</span>
-            <h2>AI Practice</h2>
-            <p>
-              Practice concepts and get instant feedback.
-            </p>
-          </div>
-
-          <button
-            class="primary-btn"
-            id="pageStartPracticeBtn"
-          >
-            Start AI Practice
-          </button>
-        </div>
-
-        <div class="practice-page-stats">
-          <article class="summary-card">
-            <span>Total Questions</span>
-            <strong>
-              ${practiceHistory.length}
-            </strong>
-          </article>
-
-          <article class="summary-card">
-            <span>Average Score</span>
-            <strong>
-              ${getAveragePracticeScore()}/10
-            </strong>
-          </article>
-
-          <article class="summary-card">
-            <span>Best Score</span>
-            <strong>
-              ${getBestPracticeScore()}/10
-            </strong>
-          </article>
-        </div>
-
-        <div class="practice-intro-card">
-          <h3>Practice smarter</h3>
-          <p>
-            Choose a topic and difficulty, then solve an AI-generated question.
-          </p>
-        </div>
-      </section>
-    `;
-
-    appView.classList.add(
-      "app-view-visible"
-    );
-
-    const startButton =
-      document.querySelector(
-        "#pageStartPracticeBtn"
-      );
-
-    if (startButton) {
-      startButton.addEventListener(
-        "click",
-        openAiPracticeModal
-      );
-    }
-  }
-
-  function renderAnalyticsPage() {
-    const taskCompletion =
-      tasks.length > 0
-        ? Math.round(
-            (tasks.filter(
-              (task) => task.completed
-            ).length /
-              tasks.length) *
-              100
-          )
-        : 0;
-
-    const subjectAverage =
-      subjects.length > 0
-        ? Math.round(
-            subjects.reduce(
-              (sum, subject) =>
-                sum +
-                Number(
-                  subject.progress || 0
-                ),
-              0
-            ) / subjects.length
-          )
-        : 0;
-
-    appView.innerHTML = `
-      <section class="page-section">
-        <div class="page-header">
-          <div>
-            <span class="page-kicker">Insights</span>
-            <h2>Analytics</h2>
-            <p>
-              Understand your study performance at a glance.
-            </p>
-          </div>
-        </div>
-
-        <div class="analytics-grid">
-          <article class="analytics-card">
-            <span>Task Completion</span>
-            <strong>${taskCompletion}%</strong>
-
-            <div class="progress-bar">
-              <div
-                class="progress-fill"
-                style="width:${taskCompletion}%"
-              ></div>
-            </div>
-          </article>
-
-          <article class="analytics-card">
-            <span>Subject Progress</span>
-            <strong>${subjectAverage}%</strong>
-
-            <div class="progress-bar">
-              <div
-                class="progress-fill"
-                style="width:${subjectAverage}%"
-              ></div>
-            </div>
-          </article>
-
-          <article class="analytics-card">
-            <span>AI Average</span>
-            <strong>
-              ${getAveragePracticeScore()}/10
-            </strong>
-          </article>
-
-          <article class="analytics-card">
-            <span>Best AI Score</span>
-            <strong>
-              ${getBestPracticeScore()}/10
-            </strong>
-          </article>
-        </div>
-
-        <div class="analytics-section">
-          <h3>Subject Progress</h3>
-
-          ${
-            subjects.length
-              ? subjects
-                  .map(
-                    (subject) => `
-                      <div class="analytics-progress-row">
-                        <div>
-                          <span>
-                            ${subject.name}
-                          </span>
-
-                          <strong>
-                            ${subject.progress}%
-                          </strong>
-                        </div>
-
-                        <div class="progress-bar">
-                          <div
-                            class="progress-fill"
-                            style="width:${subject.progress}%"
-                          ></div>
-                        </div>
-                      </div>
-                    `
-                  )
-                  .join("")
-              : `
-                <div class="empty-state">
-                  <p>
-                    Add subjects to see analytics.
-                  </p>
-                </div>
-              `
-          }
-        </div>
-
-        <div class="analytics-section">
-          <h3>Practice Performance</h3>
-
-          <div class="analytics-practice-box">
-            <div>
-              <span>Questions attempted</span>
-              <strong>
-                ${practiceHistory.length}
-              </strong>
-            </div>
-
-            <div>
-              <span>Average score</span>
-              <strong>
-                ${getAveragePracticeScore()}/10
-              </strong>
-            </div>
-
-            <div>
-              <span>Best score</span>
-              <strong>
-                ${getBestPracticeScore()}/10
-              </strong>
-            </div>
-          </div>
-        </div>
-      </section>
-    `;
-
-    appView.classList.add(
-      "app-view-visible"
-    );
-}}    function renderWeakTopicsPage() {
-    const groups = {};
-
-    practiceHistory.forEach((item) => {
-      const score = Number(item.score || 0);
-      const key = item.topic || "Unknown topic";
-
-      if (score <= 6) {
-        if (!groups[key]) {
-          groups[key] = {
-            topic: key,
-            scores: []
-          };
-        }
-
-        groups[key].scores.push(score);
-      }
-    });
-
-    const weakTopics = Object.values(groups).sort((a, b) => {
-      const avgA =
-        a.scores.reduce((sum, score) => sum + score, 0) /
-        a.scores.length;
-
-      const avgB =
-        b.scores.reduce((sum, score) => sum + score, 0) /
-        b.scores.length;
-
-      return avgA - avgB;
-    });
-
-    const content = weakTopics.length
-      ? weakTopics
-          .map((item) => {
-            const average =
-              item.scores.reduce(
-                (sum, score) => sum + score,
-                0
-              ) / item.scores.length;
-
-            const percentage = Math.max(
-              0,
-              Math.min(100, average * 10)
-            );
-
-            return `
-              <article class="weak-topic-card">
-                <div class="weak-topic-top">
-                  <div>
-                    <h3>${item.topic}</h3>
-                    <p>
-                      ${item.scores.length} attempt(s)
-                    </p>
-                  </div>
-
-                  <strong>
-                    ${average.toFixed(1)}/10
-                  </strong>
-                </div>
-
-                <div class="progress-bar">
-                  <div
-                    class="progress-fill"
-                    style="width:${percentage}%"
-                  ></div>
-                </div>
-
-                <span class="weak-label">
-                  ${
-                    average < 4
-                      ? "Needs attention"
-                      : "Needs more practice"
-                  }
-                </span>
-              </article>
-            `;
-          })
-          .join("")
-      : `
-          <div class="empty-state large">
-            <h3>No weak topics yet</h3>
-            <p>
-              Topics with scores of 6/10 or below
-              will appear here.
-            </p>
-          </div>
-        `;
-
-    appView.innerHTML = `
-      <section class="page-section">
-
-        <div class="page-header">
-          <div>
-            <span class="page-kicker">
-              Improvement
-            </span>
-
-            <h2>Weak Topics</h2>
-
-            <p>
-              Focus on topics where your AI practice
-              scores are lowest.
-            </p>
-          </div>
-        </div>
-
-        <div class="weak-topic-grid">
-          ${content}
-        </div>
-
-      </section>
-    `;
-
-    appView.classList.add("app-view-visible");
-  }
-
-
-  // ==========================================
-  // SETTINGS PAGE
-  // ==========================================
-
-  function renderSettingsPage() {
-    appView.innerHTML = `
-      <section class="page-section">
-
-        <div class="page-header">
-          <div>
-            <span class="page-kicker">
-              Preferences
-            </span>
-
-            <h2>Settings</h2>
-
-            <p>
-              Manage your Nexviora preferences.
-            </p>
-          </div>
-        </div>
-
-        <div class="settings-grid">
-
-          <div class="page-panel setting-row">
-            <div>
-              <h3>Practice History</h3>
-              <p>
-                AI practice attempts are saved
-                in this browser.
-              </p>
-            </div>
-
-            <span class="setting-badge">
-              Enabled
-            </span>
-          </div>
-
-          <div class="page-panel setting-row">
-            <div>
-              <h3>Local Progress</h3>
-              <p>
-                Tasks, subjects and study sessions
-                are stored locally.
-              </p>
-            </div>
-
-            <span class="setting-badge">
-              Local
-            </span>
-          </div>
-
-          <div class="page-panel setting-row">
-            <div>
-              <h3>Study Copilot</h3>
-              <p>
-                Use your AI study assistant for
-                text, voice and image questions.
-              </p>
-            </div>
-
-            <button
-              class="page-secondary"
-              id="settingsCopilotBtn"
-            >
-              Open Copilot
-            </button>
-          </div>
-
-        </div>
-      </section>
-    `;
-
-    const settingsCopilotBtn =
-      document.querySelector("#settingsCopilotBtn");
-
-    if (settingsCopilotBtn) {
-      settingsCopilotBtn.addEventListener(
-        "click",
-        () => {
-          const openButton =
-            document.querySelector("#openCopilotBtn");
-
-          if (openButton) {
-            openButton.click();
-          }
-        }
-      );
-    }
-  }
-
-
-  // ==========================================
-  // NAVIGATION
-  // ==========================================
-
-  function openPage(view) {
-    switch (view) {
-      case "dashboard":
-        showDashboard();
-        break;
-
-      case "subjects":
-        renderSubjectsPage();
-        break;
-
-      case "tasks":
-        renderTasksPage();
-        break;
-
-      case "sessions":
-        renderSessionsPage();
-        break;
-
-      case "practice":
-        renderPracticePage();
-        break;
-
-      case "analytics":
-        renderAnalyticsPage();
-        break;
-
-      case "weak":
-        renderWeakTopicsPage();
-        break;
-
-      case "settings":
-        renderSettingsPage();
-        break;
-
-      default:
-        showDashboard();
-    }
-  }
-
-
-  navItems.forEach((item) => {
-    item.addEventListener("click", (event) => {
-      event.preventDefault();
-
-      const view = getViewName(item);
-
-      if (!view) return;
-
-      navItems.forEach((nav) => {
-        nav.classList.remove("active");
-      });
-
-      item.classList.add("active");
-
-      openPage(view);
-    });
-  });
-
-
-  // ==========================================
-  // INITIAL STATE
-  // ==========================================
-
-  showDashboard();
-
-
-
-initAppRouter();  
-    function renderSettingsPage() {
-        showAppView("Settings", "Basic dashboard preferences and local data controls.", `
-            <div class="settings-grid">
-                <div class="page-panel setting-row">
-                    <div>
-                        <h3>Practice History</h3>
-                        <p>Keep AI attempts saved in this browser.</p>
-                    </div>
-                    <span class="setting-badge">Enabled</span>
-                </div>
-
-                <div class="page-panel setting-row">
-                    <div>
-                        <h3>Local Progress</h3>
-                        <p>Tasks, subjects and study time are stored locally.</p>
-                    </div>
-                    <span class="setting-badge">Local</span>
-                </div>
-
-                <div class="page-panel setting-row">
-                    <div>
-                        <h3>AI Assistant</h3>
-                        <p>Use text, voice and image questions through Study Copilot.</p>
-                    </div>
-                    <button class="page-secondary" id="settingsCopilotBtn">
-                        Open Copilot
-                    </button>
-                </div>
-            </div>
-        `);
-
-        document.querySelector("#settingsCopilotBtn")?.addEventListener("click", () => {
-            if (copilotToggle) copilotToggle.click();
-        });
-    }
-
-    function openPage(name) {
-        switch (name) {
-            case "Dashboard":
-                showDashboard();
-                break;
-
-            case "My Subjects":
-                renderSubjectsPage();
-                break;
-
-            case "Tasks":
-                renderTasksPage();
-                break;
-
-            case "Study Sessions":
-                renderStudySessionsPage();
-                break;
-
-            case "AI Practice":
-                renderAIPracticePage();
-                break;
-
-            case "Analytics":
-                renderAnalyticsPage();
-                break;
-
-            case "Weak Topics":
-                renderWeakTopicsPage();
-                break;
-
-            case "Settings":
-                renderSettingsPage();
-                break;
-
-            default:
-                showDashboard();
-        }
-    }
-
-    navItems.forEach(item => {
-        item.addEventListener("click", event => {
-            event.preventDefault();
-
-            navItems.forEach(n => n.classList.remove("active"));
-            item.classList.add("active");
-
-            openPage(
-                item.textContent.replace(/\s+/g, " ").trim()
-            );
-        });
-    });
-
-    historyButton?.addEventListener("click", () => {
-        if (!historySection) return;
-
-        const open = historySection.classList.toggle("history-open");
-
-        historyButton.textContent = open
-            ? "Hide History ↑"
-            : "View History →";
-    });
-
-    copilotOpen?.addEventListener("click", () => {
-        copilotToggle?.click();
-    });
-
-    // Keep dashboard history collapsed on first load.
-    if (historySection) {
-        historySection.classList.remove("history-open");
-    };

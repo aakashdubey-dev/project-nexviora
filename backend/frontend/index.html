@@ -1,135 +1,126 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Nexviora — Learning Dashboard</title>
+
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-```
-<!-- Sidebar -->
-<aside class="sidebar">
+    <!-- Sidebar -->
+    <aside class="sidebar">
 
-    <div class="brand">
-        <div class="brand-icon">N</div>
-        <div>
-            <h2>Nexviora</h2>
-            <span>Learning smarter</span>
-        </div>
-    </div>
-
-    <nav class="navigation">
-
-        <p class="nav-title">MENU</p>
-
-        <a href="#" class="nav-item active" data-view="dashboard">
-            <span>⌂</span>
-            Dashboard
-        </a>
-
-        <a href="#" class="nav-item" data-view="subjects">
-            <span>📚</span>
-            My Subjects
-        </a>
-
-        <a href="#" class="nav-item" data-view="tasks">
-            <span>✓</span>
-            Tasks
-        </a>
-
-        <a href="#" class="nav-item" id="studySessionBtn" data-view="sessions">
-            <span>⏱</span>
-            Study Sessions
-        </a>
-
-        <a href="#" class="nav-item" id="aiPracticeNavBtn" data-view="ai-practice">
-            <span>🤖</span>
-            AI Practice
-        </a>
-
-        <p class="nav-title">INSIGHTS</p>
-
-        <a href="#" class="nav-item" data-view="analytics">
-            <span>📊</span>
-            Analytics
-        </a>
-
-        <a href="#" class="nav-item" data-view="weak-topics">
-            <span>🎯</span>
-            Weak Topics
-        </a>
-
-        <a href="#" class="nav-item" data-view="settings">
-            <span>⚙</span>
-            Settings
-        </a>
-
-    </nav>
-
-    <div class="sidebar-bottom">
-
-        <div class="upgrade-card">
-            <div class="upgrade-icon">✦</div>
-            <h4>Learn smarter</h4>
-            <p>Let Nexviora help you understand your learning patterns.</p>
-            <button id="sidebarCopilotBtn">Explore AI</button>
-        </div>
-
-        <div class="profile-mini">
-            <div class="avatar">A</div>
+        <div class="brand">
+            <div class="brand-icon">N</div>
             <div>
-                <strong>Aakash</strong>
-                <span>Student</span>
+                <h2>Nexviora</h2>
+                <span>Learning smarter</span>
             </div>
-            <span class="dots">•••</span>
         </div>
 
-    </div>
+        <nav class="navigation">
 
-</aside>
+            <p class="nav-title">MENU</p>
 
+            <a href="#" class="nav-item active">
+                <span>⌂</span>
+                Dashboard
+            </a>
 
-<!-- Main Content -->
-<main class="main-content">
+            <a href="#" class="nav-item">
+                <span>📚</span>
+                My Subjects
+            </a>
 
-    <!-- Top bar -->
-    <header class="topbar">
+            <a href="#" class="nav-item">
+                <span>✓</span>
+                Tasks
+            </a>
 
-        <div>
-            <p class="welcome-small">MONDAY, 22 AUGUST</p>
-            <h1>Good evening, Aakash 👋</h1>
-            <p class="subtitle">
-                Here's what your learning looks like today.
-            </p>
-        </div>
+            <a href="#" class="nav-item" id="studySessionBtn"> 
+                <span>⏱</span> 
+                Study Sessions 
+            </a>
 
-        <div class="top-actions">
+            <a href="#" class="nav-item" id="aiPracticeNavBtn">
+                <span>🤖</span>
+                AI Practice
+            </a>
 
-            <button class="icon-button">🔔</button>
+            <p class="nav-title">INSIGHTS</p>
 
-            <div class="top-profile">
+            <a href="#" class="nav-item">
+                <span>📊</span>
+                Analytics
+            </a>
+
+            <a href="#" class="nav-item">
+                <span>🎯</span>
+                Weak Topics
+            </a>
+
+            <a href="#" class="nav-item">
+                <span>⚙</span>
+                Settings
+            </a>
+
+        </nav>
+
+        <div class="sidebar-bottom">
+            <div class="upgrade-card">
+                <div class="upgrade-icon">✦</div>
+                <h4>Learn smarter</h4>
+                <p>Let Nexviora help you understand your learning patterns.</p>
+                <button>Explore AI</button>
+            </div>
+
+            <div class="profile-mini">
                 <div class="avatar">A</div>
                 <div>
                     <strong>Aakash</strong>
-                    <span>BTech • Semester 2</span>
+                    <span>Student</span>
                 </div>
+                <span class="dots">•••</span>
             </div>
-
         </div>
 
-    </header>
+    </aside>
 
 
-    <!-- Dynamic app view -->
-    <section id="appView" class="app-view" aria-live="polite"></section>
+    <!-- Main Content -->
+    <main class="main-content">
 
+        <!-- Top bar -->
+        <header class="topbar">
 
-    <!-- Dashboard -->
-    <div id="dashboardContent">
+            <div>
+                <p class="welcome-small">MONDAY, 22 AUGUST</p>
+                <h1>Good evening, Aakash 👋</h1>
+                <p class="subtitle">
+                    Here's what your learning looks like today.
+                </p>
+            </div>
+
+            <div class="top-actions">
+
+                <button class="icon-button">🔔</button>
+
+                <div class="top-profile">
+                    <div class="avatar">A</div>
+                    <div>
+                        <strong>Aakash</strong>
+                        <span>BTech • Semester 1</span>
+                    </div>
+                </div>
+
+            </div>
+
+        </header>
+
 
         <!-- Stats -->
         <section class="stats-grid">
@@ -187,20 +178,65 @@
             <div class="panel tasks-panel">
 
                 <div class="panel-header">
-
                     <div>
                         <h3>Today's Plan</h3>
                         <p>Stay consistent, one task at a time.</p>
                     </div>
 
-                    <button class="view-button" id="addTaskBtn">
-                        + Add Task
-                    </button>
-
+                   <button class="view-button" id="addTaskBtn">+ Add Task</button>
                 </div>
 
 
-                <div class="task-list" id="dashboardTaskList"></div>
+                <div class="task-list">
+
+                    <div class="task">
+                        <div class="check"></div>
+
+                        <div class="task-info">
+                            <strong>Complete Array Practice</strong>
+                            <span>DSA • 45 min</span>
+                        </div>
+
+                        <span class="task-tag high">High</span>
+                    </div>
+
+
+                    <div class="task">
+                        <div class="check completed">✓</div>
+
+                        <div class="task-info">
+                            <strong>Revise Digital Electronics</strong>
+                            <span>Digital Electronics • 30 min</span>
+                        </div>
+
+                        <span class="task-tag medium">Medium</span>
+                    </div>
+
+
+                    <div class="task">
+                        <div class="check"></div>
+
+                        <div class="task-info">
+                            <strong>Practice Python Functions</strong>
+                            <span>Python • 40 min</span>
+                        </div>
+
+                        <span class="task-tag medium">Medium</span>
+                    </div>
+
+
+                    <div class="task">
+                        <div class="check"></div>
+
+                        <div class="task-info">
+                            <strong>Read DBMS Notes</strong>
+                            <span>DBMS • 25 min</span>
+                        </div>
+
+                        <span class="task-tag low">Low</span>
+                    </div>
+
+                </div>
 
             </div>
 
@@ -209,52 +245,48 @@
             <div class="panel progress-panel">
 
                 <div class="panel-header">
-
                     <div>
                         <h3>Weekly Progress</h3>
                         <p>Your study activity</p>
                     </div>
 
-                    <button class="dropdown">
-                        This Week ▾
-                    </button>
-
+                    <button class="dropdown">This Week ▾</button>
                 </div>
 
                 <div class="progress-chart">
 
                     <div class="bar-area">
-                        <div class="bar" style="height:45%"></div>
+                        <div class="bar" style="height: 45%"></div>
                         <span>Mon</span>
                     </div>
 
                     <div class="bar-area">
-                        <div class="bar" style="height:70%"></div>
+                        <div class="bar" style="height: 70%"></div>
                         <span>Tue</span>
                     </div>
 
                     <div class="bar-area">
-                        <div class="bar" style="height:55%"></div>
+                        <div class="bar" style="height: 55%"></div>
                         <span>Wed</span>
                     </div>
 
                     <div class="bar-area">
-                        <div class="bar active-bar" style="height:85%"></div>
+                        <div class="bar active-bar" style="height: 85%"></div>
                         <span>Thu</span>
                     </div>
 
                     <div class="bar-area">
-                        <div class="bar" style="height:65%"></div>
+                        <div class="bar" style="height: 65%"></div>
                         <span>Fri</span>
                     </div>
 
                     <div class="bar-area">
-                        <div class="bar" style="height:40%"></div>
+                        <div class="bar" style="height: 40%"></div>
                         <span>Sat</span>
                     </div>
 
                     <div class="bar-area">
-                        <div class="bar" style="height:25%"></div>
+                        <div class="bar" style="height: 25%"></div>
                         <span>Sun</span>
                     </div>
 
@@ -269,107 +301,49 @@
 
         </section>
 
+         <!-- AI Practice History -->
+<section class="practice-history-section">
 
-        <!-- AI Practice History -->
-        <section class="practice-history-section" id="practiceHistorySection">
+    <div class="panel">
 
-            <div class="panel">
-
-                <div class="panel-header history-header">
-
-                    <div>
-                        <h3>AI Practice History</h3>
-                        <p>Your recent practice performance</p>
-                    </div>
-
-                    <div class="history-actions">
-
-                        <div class="practice-stats">
-
-                            <div>
-                                <strong id="totalQuestions">0</strong>
-                                <span>Questions</span>
-                            </div>
-
-                            <div>
-                                <strong id="averageScore">0/10</strong>
-                                <span>Average</span>
-                            </div>
-
-                            <div>
-                                <strong id="bestScore">0/10</strong>
-                                <span>Best Score</span>
-                            </div>
-
-                        </div>
-
-                        <button id="historyToggleBtn" class="view-button">
-                            View History →
-                        </button>
-
-                    </div>
-
-                </div>
-
-
-                <div class="history-list" id="practiceHistory">
-
-                    <div class="empty-history">
-                        <span>🤖</span>
-                        <p>No practice attempts yet.</p>
-                        <small>
-                            Complete an AI Practice question to see your results here.
-                        </small>
-                    </div>
-
-                </div>
-
+        <div class="panel-header">
+            <div>
+                <h3>AI Practice History</h3>
+                <p>Your recent practice performance</p>
             </div>
 
-        </section>
-
-
-        <!-- Study Copilot -->
-        <section class="copilot-card" id="copilotCard">
-
-            <div class="copilot-card-content">
-
-                <div class="copilot-icon">✦</div>
-
-                <div class="copilot-text">
-
-                    <span class="copilot-label">
-                        NEXVIORA STUDY COPILOT
-                    </span>
-
-                    <h2>
-                        Your personal AI study companion
-                    </h2>
-
-                    <p>
-                        Ask questions, explain difficult topics,
-                        use your voice, or upload a question photo.
-                    </p>
-
-                    <div class="copilot-features">
-
-                        <span>💬 Ask anything</span>
-                        <span>🎙 Voice input</span>
-                        <span>📷 Question photo</span>
-
-                    </div>
-
+            <div class="practice-stats">
+                <div>
+                    <strong id="totalQuestions">0</strong>
+                    <span>Questions</span>
                 </div>
 
-                <button id="openCopilotBtn" class="primary-button">
-                    Open Study Copilot →
-                </button>
+                <div>
+                    <strong id="averageScore">0/10</strong>
+                    <span>Average</span>
+                </div>
 
+                <div>
+                    <strong id="bestScore">0/10</strong>
+                    <span>Best Score</span>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="history-list" id="practiceHistory">
+
+            <div class="empty-history">
+                <span>🤖</span>
+                <p>No practice attempts yet.</p>
+                <small>Complete an AI Practice question to see your results here.</small>
             </div>
 
-        </section>
+        </div>
 
+    </div>
 
+</section>
         <!-- Bottom Grid -->
         <section class="bottom-grid">
 
@@ -377,23 +351,20 @@
             <div class="panel">
 
                 <div class="panel-header">
-
                     <div>
                         <h3>My Subjects</h3>
                         <p>Your current learning progress</p>
                     </div>
 
                     <button class="view-button" id="manageSubjectsBtn">
-                        Manage →
-                    </button>
-
+    Manage →
+</button>
                 </div>
 
 
                 <div class="subjects" id="subjectsList"></div>
 
-            </div>
-
+           </div>
 
             <!-- AI Practice -->
             <div class="panel ai-panel">
@@ -404,22 +375,18 @@
 
                     <div class="ai-icon">✦</div>
 
-                    <span class="ai-label">
-                        NEXVIORA AI
-                    </span>
+                    <span class="ai-label">NEXVIORA AI</span>
 
-                    <h3>
-                        Ready to test yourself?
-                    </h3>
+                    <h3>Ready to test yourself?</h3>
 
                     <p>
                         Practice questions based on your subjects
                         and learning progress.
                     </p>
 
-                    <button class="primary-button" id="aiPracticeBtn">
-                        Start AI Practice →
-                    </button>
+                <button class="primary-button" id="aiPracticeBtn">
+                    Start AI Practice →
+                </button>   
 
                 </div>
 
@@ -427,66 +394,37 @@
 
         </section>
 
-    </div>
-
-
-</main>
-
-
-<!-- Study Timer -->
-<div class="study-timer" id="studyTimer">
+    </main>
+    <div class="study-timer" id="studyTimer">
 
     <div class="timer-box">
 
-        <button class="timer-close" id="closeTimer">
-            ×
-        </button>
+        <button class="timer-close" id="closeTimer">×</button>
 
-        <span class="timer-label">
-            NEXVIORA STUDY SESSION
-        </span>
+        <span class="timer-label">NEXVIORA STUDY SESSION</span>
 
-        <h2 id="timerDisplay">
-            00:00:00
-        </h2>
+        <h2 id="timerDisplay">00:00:00</h2>
 
-        <p>
-            Focus on your learning.
-        </p>
+        <p>Focus on your learning.</p>
 
         <div class="timer-actions">
-
-            <button id="startTimer">
-                Start
-            </button>
-
-            <button id="stopTimer">
-                Stop
-            </button>
-
+            <button id="startTimer">Start</button>
+            <button id="stopTimer">Stop</button>
         </div>
 
     </div>
 
 </div>
-
-
-<!-- Task Modal -->
-<div class="modal" id="taskModal">
-
+    <div class="modal" id="taskModal">
     <div class="modal-box">
 
         <div class="modal-header">
-
             <div>
                 <h3>Add New Task</h3>
                 <p>Create a task for your study plan.</p>
             </div>
 
-            <button class="close-modal" id="closeModal">
-                ×
-            </button>
-
+            <button class="close-modal" id="closeModal">×</button>
         </div>
 
         <input
@@ -508,19 +446,9 @@
         >
 
         <select id="taskPriority">
-
-            <option value="Medium">
-                Medium Priority
-            </option>
-
-            <option value="High">
-                High Priority
-            </option>
-
-            <option value="Low">
-                Low Priority
-            </option>
-
+            <option value="Medium">Medium Priority</option>
+            <option value="High">High Priority</option>
+            <option value="Low">Low Priority</option>
         </select>
 
         <button id="saveTaskBtn" class="save-task">
@@ -528,62 +456,32 @@
         </button>
 
     </div>
-
 </div>
 
-
-<!-- AI Practice Modal -->
 <div class="ai-modal" id="aiModal">
 
     <div class="ai-modal-box">
 
-        <button class="ai-close" id="closeAiModal">
-            ×
-        </button>
+        <button class="ai-close" id="closeAiModal">×</button>
 
-        <span class="ai-label">
-            NEXVIORA AI
-        </span>
+        <span class="ai-label">NEXVIORA AI</span>
 
-        <h2>
-            AI Practice
-        </h2>
+        <h2>AI Practice</h2>
 
         <p class="ai-description">
-            Choose your education level, subject and topic
-            to start practicing.
+            Choose your education level, subject and topic to start practicing.
         </p>
 
         <select id="aiLevel">
-
-            <option value="">
-                Select Your Level
-            </option>
-
-            <option value="Class 6-8">
-                Class 6-8
-            </option>
-
-            <option value="Class 9-10">
-                Class 9-10
-            </option>
-
-            <option value="Class 11-12">
-                Class 11-12
-            </option>
-
-            <option value="BTech">
-                BTech / College
-            </option>
-
+            <option value="">Select Your Level</option>
+            <option value="Class 6-8">Class 6-8</option>
+            <option value="Class 9-10">Class 9-10</option>
+            <option value="Class 11-12">Class 11-12</option>
+            <option value="BTech">BTech / College</option>
         </select>
 
         <select id="aiSubject">
-
-            <option value="">
-                Select Subject
-            </option>
-
+            <option value="">Select Subject</option>
         </select>
 
         <input
@@ -595,7 +493,6 @@
         <button class="ai-generate" id="generateQuestion">
             Generate Question →
         </button>
-
 
         <div class="question-area" id="questionArea">
 
@@ -623,26 +520,17 @@
     </div>
 
 </div>
-
-
-<!-- Subject Modal -->
 <div class="modal" id="subjectModal">
 
     <div class="modal-box">
 
         <div class="modal-header">
-
             <div>
                 <h3>Manage Subjects</h3>
-                <p>
-                    Add a subject and track your learning progress.
-                </p>
+                <p>Add a subject and track your learning progress.</p>
             </div>
 
-            <button class="close-modal" id="closeSubjectModal">
-                ×
-            </button>
-
+            <button class="close-modal" id="closeSubjectModal">×</button>
         </div>
 
         <input
@@ -672,101 +560,6 @@
     </div>
 
 </div>
-
-
-<!-- Study Copilot Panel -->
-<div class="copilot-panel" id="copilotPanel">
-
-    <div class="copilot-panel-header">
-
-        <div>
-            <span class="copilot-label">
-                NEXVIORA AI
-            </span>
-
-            <h2>
-                Study Copilot
-            </h2>
-        </div>
-
-        <button id="closeCopilotBtn" class="copilot-close">
-            ×
-        </button>
-
-    </div>
-
-
-    <div class="copilot-messages" id="copilotMessages">
-
-        <div class="copilot-message assistant">
-            <div class="message-avatar">
-                ✦
-            </div>
-
-            <div class="message-content">
-                Hi Aakash! 👋 I'm your Study Copilot.
-                Ask me anything about your studies.
-            </div>
-        </div>
-
-    </div>
-
-
-    <div class="copilot-input-area">
-
-        <textarea
-            id="copilotInput"
-            placeholder="Ask your study question..."
-            rows="2"
-        ></textarea>
-
-        <div class="copilot-tools">
-
-            <input
-                type="file"
-                id="copilotImageInput"
-                accept="image/*"
-                hidden
-            >
-
-            <button
-                id="copilotImageBtn"
-                class="copilot-tool-btn"
-                title="Upload image"
-            >
-                📷
-            </button>
-
-            <button
-                id="copilotMic"
-                class="copilot-tool-btn"
-                title="Voice input"
-            >
-                🎙
-            </button>
-
-            <button
-                id="copilotSend"
-                class="copilot-send"
-            >
-                Send →
-            </button>
-
-        </div>
-
-    </div>
-
-</div>
-
-
-<!-- Hidden old floating trigger -->
-<button id="copilotToggle" style="display:none;">
-    AI
-</button>
-
-
 <script src="script.js"></script>
-```
-
 </body>
 </html>
